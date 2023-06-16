@@ -21,6 +21,7 @@ func main() {
 		})
 	})
 	app.Get("/get-test", func(c *fiber.Ctx) error {
+		time.Sleep(1 * time.Second)
 		return c.Render("partials/test", fiber.Map{
 			"Time": time.Now().Format("2006-01-02 15:04:05"),
 		})

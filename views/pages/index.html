@@ -1,6 +1,7 @@
 <div>
   {{ .Title}}
-  <div hx-get="/get-test" hx-trigger="every 1s">
+  <div hx-get="/get-test" hx-trigger="every 2s" hx-indicator="#indicator">
     Starting watch...
   </div>
 </div>
+<p id="indicator" class="htmx-indicator">Loading...</p>
