@@ -1,0 +1,11 @@
+<div class="navbar">
+  <div class="navbar-inner">
+    {{ template "partials/navigation/hyppo-menu" . }}
+    <input class="search-bar body" type="text" placeholder="🔍 Search from 100+ business models" />
+    {{ if eq .User.Name ""}}
+    <button class="primary">🦄 Login</button>
+    {{ else }}
+    {{ template "partials/navigation/user-menu" . }}
+    {{ end }}
+  </div>
+</div>

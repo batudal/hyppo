@@ -15,17 +15,15 @@ func main() {
 		Views: engine,
 	})
 	app.Get("/", func(c *fiber.Ctx) error {
+		type User struct {
+			Name   string
+			Avatar string
+		}
 		return c.Render("pages/index", fiber.Map{
-			"Title": "Hello, Index!",
-			"Tags": []string{
-				"🔬 Most searched",
-				"🧪 Most tested",
-				"⚡️ Top rated",
-				"🥰️ Most popular",
-				"👀 Most recent",
-				"🎙 Most talked about",
-				"👩‍💻️ Most used",
-				"✨ Most rated"},
+			"User": User{
+				Name:   "John",
+				Avatar: "https://personal-bucket.fra1.cdn.digitaloceanspaces.com/deadfella.png",
+			},
 		}, "layouts/main")
 	})
 	app.Get("/get-test", func(c *fiber.Ctx) error {
