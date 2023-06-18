@@ -1,0 +1,29 @@
+<div class="models">
+  {{range $model := .Models}}
+  <div class="model" _="on click toggle .hide on
+      #{{$model.Flatname}}">
+    <div class="model-bar">
+      <div class="large">{{.Name}}</div>
+      <div class="ratings-container">
+        <div class="large">🎖 {{.Rating}}</div>
+        <div class="vertical-divider"></div>
+        <div class="body-medium">👍 {{.RatingsCount}} ratings</div>
+        <button class="primary small-button" style="margin-left:16px">👍 Rate</button>
+      </div>
+    </div>
+    <div class="divider"></div>
+    <div class="model-companies">
+      {{range .Companies}}
+      <div class="tag detail">{{.}}</div>
+      {{end}}
+    </div>
+    <div class="model-contents hide" id="{{$model.Flatname}}">
+      <div class="model-description">
+        <div class="body color-neutral-50">
+          {{.ParseDescription}}
+        </div>
+      </div>
+    </div>
+  </div>
+  {{ end }}
+</div>
