@@ -1,38 +1,24 @@
-<div class="user-menu">
+<div class="menu">
   <div class="user-menu-button" _="on click toggle .hide on .user-menu-modal">
     <img src="https://personal-bucket.fra1.cdn.digitaloceanspaces.com/deadfella.png" class="avatar" alt="avatar" />
     <img src="../../assets/caret-down.svg" alt="caret-down" />
   </div>
-  <div class="user-menu-modal hide" _="on mouseleave toggle .hide">
-    <div class="user-menu-section">
-      <div class="user-menu-item subtle-medium">
+  <nav class="user-menu-modal hide" _="on mouseleave toggle .hide">
+    <div class="menu-section">
+      <div class="menu-item subtle-medium">
         <div class="subtle-medium">Signed in as <span style="color:var(--color-primary)">{{.User.Name}}</span></div>
       </div>
     </div>
-    <div class="user-menu-section">
-      <div class="user-menu-item subtle-medium">
-        <a href="/account" class="subtle-medium">😎 Account</a>
-      </div>
-      <div class="user-menu-item subtle-medium">
-        <a href="/account" class="subtle-medium">🧪 Tests</a>
-      </div>
-      <div class="user-menu-item subtle-medium">
-        <a href="/account" class="subtle-medium">👍 Ratings</a>
-      </div>
-      <div class="user-menu-item subtle-medium">
-        <a href="/account" class="subtle-medium">🎙 Comments</a>
-      </div>
+    <div class="menu-section">
+      <a href="/account" class="menu-item subtle-medium">😎 Account</a>
+      <a href="/account" class="menu-item subtle-medium">🧪 Tests</a>
+      <a href="/account" class="menu-item subtle-medium">👍 Ratings</a>
+      <a href="/account" class="menu-item subtle-medium">🎙 Comments</a>
     </div>
-    <div class="user-menu-section">
-      <div class="user-menu-item subtle-medium">
-        <a href="/account" class="subtle-medium">🧑‍🔧 Settings</a>
-      </div>
-      <div class="user-menu-item subtle-medium">
-        <a href="/account" class="subtle-medium">🧾 Billing</a>
-      </div>
-      <div class="user-menu-item subtle-medium">
-        <a href="/account" class="subtle-medium">✌️ Log out</a>
-      </div>
+    <div class="menu-section">
+      <a href="/account" class="menu-item subtle-medium">🧑‍🔧 Settings</a>
+      <a href="/account" class="menu-item subtle-medium">🧾 Billing</a>
+      <a href="/account" class="menu-item subtle-medium">✌️ Log out</a>
     </div>
-  </div>
+  </nav>
 </div>

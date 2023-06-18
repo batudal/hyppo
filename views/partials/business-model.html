@@ -3,25 +3,24 @@
   <div class="model" _="on click toggle .hide on
       #{{$model.Flatname}}">
     <div class="model-bar">
-      <div class="large">{{.Name}}</div>
+      <h2>{{.Name}}</h2>
       <div class="ratings-container">
-        <div class="large">🎖 {{.Rating}}</div>
+        <h2>🎖 {{.Rating}}</h2>
         <div class="vertical-divider"></div>
-        <div class="body-medium">👍 {{.RatingsCount}} ratings</div>
-        <button class="primary small-button" style="margin-left:16px">👍 Rate</button>
+        <p class="medium color-neutral-400">👍 {{.RatingsCount}} ratings</p>
+        <button class="primary small" style="margin-left:16px">👍 Rate</button>
       </div>
     </div>
     <div class="divider"></div>
     <div class="model-companies">
       {{range .Companies}}
-      <div class="tag detail">{{.}}</div>
+      <small class="tag">{{.}}</small>
       {{end}}
     </div>
     <div class="model-contents hide" id="{{$model.Flatname}}">
+      <div class="divider"></div>
       <div class="model-description">
-        <div class="body color-neutral-50">
-          {{.ParseDescription}}
-        </div>
+        {{.ParseDescription}}
       </div>
     </div>
   </div>
