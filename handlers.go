@@ -2,16 +2,10 @@ package main
 
 import (
 	"context"
-	"html/template"
+	"os"
 	"strconv"
 
-	// "html/template"
-	"os"
-
 	"github.com/gofiber/fiber/v2"
-	"github.com/gomarkdown/markdown"
-	"github.com/gomarkdown/markdown/html"
-	"github.com/gomarkdown/markdown/parser"
 	"github.com/stripe/stripe-go/v74/webhook"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
@@ -63,29 +57,6 @@ func IndexPage(db *mongo.Client) fiber.Handler {
 			"Feed": feed,
 		}, "layouts/main")
 	}
-}
-
-func (m BusinessModel) IsLast(i int) bool {
-	return i == 3
-}
-
-func (m BusinessModel) Increment(i int64) int64 {
-	return i + 1
-}
-
-func (m BusinessModel) ParseDescription() template.HTML {
-	buf := mdToHTML([]byte(m.Description))
-	return template.HTML(buf)
-}
-
-func mdToHTML(md []byte) []byte {
-	extensions := parser.CommonExtensions | parser.AutoHeadingIDs | parser.NoEmptyLineBeforeBlock
-	p := parser.NewWithExtensions(extensions)
-	doc := p.Parse(md)
-	htmlFlags := html.CommonFlags | html.HrefTargetBlank
-	opts := html.RendererOptions{Flags: htmlFlags}
-	renderer := html.NewRenderer(opts)
-	return markdown.Render(doc, renderer)
 }
 
 func HandleCreateUser(db *mongo.Client) fiber.Handler {

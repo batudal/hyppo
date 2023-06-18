@@ -6,7 +6,6 @@ import (
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/logger"
 	"github.com/gofiber/template/html/v2"
-	"github.com/joho/godotenv"
 	"github.com/stripe/stripe-go/v74"
 	"go.mongodb.org/mongo-driver/mongo"
 )
@@ -16,7 +15,6 @@ type Config struct {
 }
 
 func main() {
-	godotenv.Load()
 	stripe.Key = os.Getenv("STRIPE_SECRET_KEY")
 	client, err := NewMongoClient()
 	if err != nil {

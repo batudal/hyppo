@@ -1,0 +1,22 @@
+version: '3'
+
+services:
+  hyppo:
+    build:
+      context: ./
+      dockerfile: ./hyppo.dockerfile
+    deploy:
+      mode: replicated
+      replicas: 1
+    env_file:
+      - .env
+    ports:
+      - "80:80"
+  redis:
+    image: 'redis:alpine'
+    environment:
+     - REDIS_REPLICATION_MODE=master
+    command:
+      redis-server
+    volumes:
+      - .db-data/redis/:/var/lib/redis

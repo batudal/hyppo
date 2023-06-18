@@ -184,7 +184,8 @@ main{
   justify-content: space-between;
   text-align: center;
   padding: 24px;
-  height: 60vh;
+  /* height: 50vh; */
+  height: 480px;
   background-image: url("https://personal-bucket.fra1.cdn.digitaloceanspaces.com/hero_background.png");
   background-size: cover;
   background-repeat: no-repeat;
