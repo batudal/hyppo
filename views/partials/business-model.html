@@ -1,7 +1,12 @@
 <div class="models">
-  {{range $model := .Models}}
-  <article class="model" _="on click toggle .hide on
-      #{{$model.Flatname}}">
+  {{$sortby := .Feed.SortBy}}
+  {{$page := .Feed.Page}}
+  {{$models := .Feed.Models}}
+  {{range $i,$model := .Feed.Models}}
+  {{if .IsLast $i}}
+  <article class="model" _="on click toggle .hide on #{{$model.Flatname}}"
+    hx-get='/models?sortby={{$sortby}}&page={{.Increment $page}}' hx-trigger="revealed" hx-target="closest div"
+    hx-swap="afterend">
     <div class="model-bar">
       <h2>{{.Name}}</h2>
       <div class="ratings-container">
@@ -24,5 +29,31 @@
       </div>
     </div>
   </article>
+  {{else}}
+  <article class="model" _="on click toggle .hide on #{{$model.Flatname}}">
+    <div class="model-bar">
+      <h2>{{.Name}}</h2>
+      <div class="ratings-container">
+        <h2>🎖 {{.Rating}}</h2>
+        <div class="vertical-divider"></div>
+        <p class="medium color-neutral-400">👍 {{.RatingsCount}} ratings</p>
+        <button class="primary small" style="margin-left:16px">👍 Rate</button>
+      </div>
+    </div>
+    <div class="divider"></div>
+    <div class="model-companies">
+      {{range .Companies}}
+      <small class="tag">{{.}}</small>
+      {{end}}
+    </div>
+    <div class="model-contents hide" id="{{$model.Flatname}}">
+      <div class="divider"></div>
+      <div class="model-description">
+        {{.ParseDescription}}
+      </div>
+    </div>
+  </article>
+
+  {{ end }}
   {{ end }}
 </div>

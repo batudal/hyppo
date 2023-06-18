@@ -148,11 +148,33 @@ select {
   }
 }
 
+footer{
+  position: fixed;
+  bottom: 0;
+  display:flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0px 24px;
+  background-color: var(--color-neutral-1000);
+  border-top: 1px solid var(--color-neutral-800);
+  width: 100%;
+}
+.footer{
+  display:flex;
+  align-items: center;
+  justify-content: center;
+  padding: 12px;
+  gap: 12px;
+  max-width: 920px;
+  width: 100%;
+}
+
 main{
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
+  margin-bottom: 120px;
 }
 
 .hero{
@@ -193,6 +215,8 @@ button {
   appearance: none;
   -moz-appearance: none;
   white-space: nowrap;
+  box-sizing: border-box;
+  box-shadow: none;
 }
 button:active {
     transform: scale(0.99);
@@ -200,6 +224,9 @@ button:active {
 button.small{
   padding: 6px 16px;
   height: 32px;
+}
+button.medium{
+  padding: 6px 16px;
 }
 button.primary {
   background-color: var(--color-primary);
@@ -210,12 +237,28 @@ button.primary {
   line-height: 20px;
   color: var(--color-neutral-50);
 }
-button.primary:hover,
-button.primary:focus {
+button.primary:hover {
   background-color: var(--color-primary-dark);
 }
 button.primary:active{
   background-color: var(--color-primary-darker);
+}
+button.secondary{
+  display:flex;
+  background-color: var(--color-neutral-800);
+  border: 1px solid var(--color-neutral-700);
+  color: var(--color-neutral-50);
+  font-style: normal;
+  font-weight: 500;
+  font-size: 14px;
+  line-height: 20px;
+  height:36px;
+}
+button.secondary:hover {
+  background-color: var(--color-neutral-700);
+}
+button.secondary:active{
+  background-color: var(--color-neutral-800);
 }
 input {
   border-radius: 6px;
@@ -486,6 +529,7 @@ small{
   max-width: 800px;
   width: 100%;
   padding: 0px 24px;
+  margin-bottom:12px;
 }
 .model{
   display:flex;
@@ -545,8 +589,6 @@ small{
   flex-direction: row;
   align-items: center;
   gap: 32px;
-  width:100%;
-  max-width:800px;
   box-sizing: border-box;
 }
 .brands {

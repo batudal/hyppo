@@ -4,6 +4,7 @@ import (
 	"os"
 
 	"github.com/gofiber/fiber/v2"
+	"github.com/gofiber/fiber/v2/middleware/logger"
 	"github.com/gofiber/template/html/v2"
 	"github.com/joho/godotenv"
 	"github.com/stripe/stripe-go/v74"
@@ -32,8 +33,10 @@ func main() {
 	config := Config{
 		mc: client,
 	}
+	app.Use(logger.New())
 	app.Get("/", IndexPage(config.mc))
 	app.Get("/create_user", HandleCreateUser(config.mc))
+	app.Get("/models", HandleGetModels(config.mc))
 	app.Static("/assets", "./assets")
 	app.Listen(":80")
 }

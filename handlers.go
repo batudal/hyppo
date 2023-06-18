@@ -3,6 +3,8 @@ package main
 import (
 	"context"
 	"html/template"
+	"strconv"
+
 	// "html/template"
 	"os"
 
@@ -16,21 +18,59 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
-func IndexPage(db *mongo.Client) fiber.Handler {
+func HandleGetModels(db *mongo.Client) fiber.Handler {
 	return func(c *fiber.Ctx) error {
-		var models []BusinessModel
+		page, err := strconv.Atoi(c.Query("page"))
+		if err != nil {
+			return err
+		}
+		feed := Feed{
+			Page:   int64(page),
+			SortBy: c.Query("sortby"),
+		}
 		filter := bson.D{}
-		opts := options.Find().SetSort(bson.D{{"rating", -1}})
+		opts := options.
+			Find().
+			SetSort(bson.D{{c.Query("sortby"), -1}}).
+			SetLimit(4).
+			SetSkip(int64(page-1) * 4)
 		coll := db.Database("primary").Collection("business-models")
 		cursor, err := coll.Find(context.Background(), filter, opts)
-		if err = cursor.All(context.TODO(), &models); err != nil {
+		if err = cursor.All(context.TODO(), &feed.Models); err != nil {
+			panic(err)
+		}
+		return c.Render("partials/business-model", fiber.Map{
+			"Feed": feed,
+		})
+	}
+}
+
+func IndexPage(db *mongo.Client) fiber.Handler {
+	return func(c *fiber.Ctx) error {
+		feed := Feed{
+			Page:   1,
+			SortBy: "createdat",
+		}
+		filter := bson.D{}
+		opts := options.Find().SetSort(bson.D{{"createdat", -1}}).SetLimit(4)
+		coll := db.Database("primary").Collection("business-models")
+		cursor, err := coll.Find(context.Background(), filter, opts)
+		if err = cursor.All(context.TODO(), &feed.Models); err != nil {
 			panic(err)
 			// todo: return 404 page
 		}
 		return c.Render("pages/index", fiber.Map{
-			"Models": models,
+			"Feed": feed,
 		}, "layouts/main")
 	}
+}
+
+func (m BusinessModel) IsLast(i int) bool {
+	return i == 3
+}
+
+func (m BusinessModel) Increment(i int64) int64 {
+	return i + 1
 }
 
 func (m BusinessModel) ParseDescription() template.HTML {
@@ -39,11 +79,9 @@ func (m BusinessModel) ParseDescription() template.HTML {
 }
 
 func mdToHTML(md []byte) []byte {
-	// create markdown parser with extensions
 	extensions := parser.CommonExtensions | parser.AutoHeadingIDs | parser.NoEmptyLineBeforeBlock
 	p := parser.NewWithExtensions(extensions)
 	doc := p.Parse(md)
-	// create HTML renderer with extensions
 	htmlFlags := html.CommonFlags | html.HrefTargetBlank
 	opts := html.RendererOptions{Flags: htmlFlags}
 	renderer := html.NewRenderer(opts)

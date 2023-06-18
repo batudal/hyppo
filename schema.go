@@ -12,9 +12,9 @@ type User struct {
 	Email         string             `bson:"email"`
 	Website       string             `bson:"website"`
 	Socials       []string           `bson:"socials"`
-	CreatedAt     string             `bson:"createdat"`
-	UpdatedAt     string             `bson:"updatedat"`
-	DeactivatedAt string             `bson:"deactivatedat"`
+	CreatedAt     int64              `bson:"createdat"`
+	UpdatedAt     int64              `bson:"updatedat"`
+	DeactivatedAt int64              `bson:"deactivatedat"`
 }
 
 type BusinessModel struct {
@@ -26,6 +26,12 @@ type BusinessModel struct {
 	RatingsCount int64              `bson:"ratingscount"`
 	LatestReview string             `bson:"latestreview"`
 	Companies    []string           `bson:"companies"`
-	CreatedAt    string             `bson:"createdat"`
-	UpdatedAt    string             `bson:"updatedat"`
+	CreatedAt    int64              `bson:"createdat"`
+	UpdatedAt    int64              `bson:"updatedat"`
+}
+
+type Feed struct {
+	Page   int64           `bson:"page"`
+	SortBy string          `bson:"sortby"`
+	Models []BusinessModel `bson:"models"`
 }
