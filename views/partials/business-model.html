@@ -1,6 +1,6 @@
 <div class="models">
   {{range $model := .Models}}
-  <div class="model" _="on click toggle .hide on
+  <article class="model" _="on click toggle .hide on
       #{{$model.Flatname}}">
     <div class="model-bar">
       <h2>{{.Name}}</h2>
@@ -23,6 +23,6 @@
         {{.ParseDescription}}
       </div>
     </div>
-  </div>
+  </article>
   {{ end }}
 </div>
