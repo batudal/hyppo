@@ -24,7 +24,6 @@ func main() {
 	if os.Getenv("PRODUCTION") == "0" {
 		engine.Reload(true)
 	}
-	engine.Reload(true)
 	app := fiber.New(fiber.Config{
 		Views: engine,
 	})

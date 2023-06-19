@@ -2,11 +2,11 @@
   <div class="navbar-inner">
     {{ template "partials/navigation/hyppo-menu" . }}
     <input class="search-bar body" type="text" placeholder="🔍 Search from 100+ business models" />
-    {{ if eq .User.Name ""}}
-    <button class="primary">🦄 Login</button>
-    {{ else }}
+    {{ if .User.Name}}
     {{ template "partials/navigation/user-menu" . }}
-    {{ template "partials/navigation/theme-toggle" . }}
+    {{ else }}
+    <button class="primary">🦄 Login</button>
     {{ end }}
+    {{ template "partials/navigation/theme-toggle" . }}
   </div>
 </div>

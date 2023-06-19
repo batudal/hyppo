@@ -53,7 +53,11 @@ func IndexPage(db *mongo.Client) fiber.Handler {
 			panic(err)
 			// todo: return 404 page
 		}
+		type User struct {
+			Name string
+		}
 		return c.Render("pages/index", fiber.Map{
+			"User": User{Name: "John"},
 			"Feed": feed,
 		}, "layouts/main")
 	}
