@@ -13,5 +13,5 @@ build: build_app
 
 build_app:
 	@echo "Building broker binary..."
-	env GOOS=linux CGO_ENABLED=0 go build -o hyppo ./
+	cd ./app && env GOOS=linux CGO_ENABLED=0 go build -o hyppo .
 	@echo "Done!"

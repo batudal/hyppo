@@ -9,14 +9,6 @@ services:
       - .env
     ports:
       - "80:80"
-  redis:
-    image: 'redis:alpine'
-    environment:
-     - REDIS_REPLICATION_MODE=master
-    command:
-      redis-server
-    volumes:
-      - .redis/:/var/lib/redis
   caddy:
     image: takez0o/hyppo-caddy:1.0.0
     deploy:
