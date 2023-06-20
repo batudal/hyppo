@@ -553,6 +553,14 @@ small{
   background-color: var(--color-neutral-100);
   cursor: pointer;
 }
+.user-menu-button.avatar{
+  height: 40px;
+  width: 40px;
+}
+.user-menu-button.icon{
+  height: 24px;
+  width: 24px;
+}
 .user-menu-modal {
   position: absolute;
   top: 44px;
@@ -691,6 +699,7 @@ small{
 }
 .brands img {
   height:20px;
+  width:100px;
 }
 
 .hide {

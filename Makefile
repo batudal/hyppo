@@ -12,6 +12,6 @@ build: build_app
 	@echo "Docker images built!"
 
 build_app:
-	@echo "Building broker binary..."
+	@echo "Building app binary..."
 	cd ./app && env GOOS=linux CGO_ENABLED=0 go build -o hyppo .
 	@echo "Done!"
