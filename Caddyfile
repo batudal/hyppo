@@ -1,5 +1,5 @@
 {
-  email takez0_o@pm.me
+	email takez0_o@pm.me
 }
 
 (static) {
@@ -21,8 +21,8 @@
 	}
 }
 
-hyppo.io:80 {
-  encode zstd gzip
-  import static
+hyppo.io {
+	encode zstd gzip
+	import static
 	reverse_proxy http://hyppo:80
 }
