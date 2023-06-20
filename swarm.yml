@@ -7,8 +7,6 @@ services:
       replicas: 1
     env_file:
       - .env
-    ports:
-      - "80:80"
   caddy:
     image: takez0o/hyppo-caddy:1.0.0
     deploy:

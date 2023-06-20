@@ -193,7 +193,7 @@ main{
   text-align: center;
   padding: 24px;
   height: 480px;
-  background-image: url("https://personal-bucket.fra1.cdn.digitaloceanspaces.com/hero_background.png");
+  background-image: url("https://hyppo-files.fra1.cdn.digitaloceanspaces.com/hero_background.webp");
   background-size:contain;
   background-repeat: no-repeat;
   background-position: bottom;
