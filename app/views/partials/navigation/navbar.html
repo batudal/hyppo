@@ -5,7 +5,7 @@
     {{ if .User.Name}}
     {{ template "partials/navigation/user-menu" . }}
     {{ else }}
-    <button class="primary">🦄 Login</button>
+    {{ template "partials/login-button" . }}
     {{ end }}
     {{ template "partials/navigation/theme-toggle" . }}
   </div>

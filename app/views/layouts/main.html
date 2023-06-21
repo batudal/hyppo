@@ -17,6 +17,9 @@
 </head>
 
 <body>
+  {{if eq .Modal "welcome"}}
+  {{template "modals/welcome" .}}
+  {{end}}
   <div class="hero">
     {{template "partials/banner" .}}
     <div class="hero-container">
