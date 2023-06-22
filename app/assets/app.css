@@ -1,18 +1,34 @@
-:root {
+/* :root { */
+/*   --color-primary: #E11D48; */
+/*   --color-primary-dark: #BE123C; */
+/*   --color-primary-darker: #9F1239; */
+/*   --color-neutral-50: #FAFAF9; */
+/*   --color-neutral-100: #F5F5F4; */
+/*   --color-neutral-200: #E7E5E4; */
+/*   --color-neutral-300: #D6D3D1; */
+/*   --color-neutral-400: #A8A29E; */
+/*   --color-neutral-500: #78716C; */
+/*   --color-neutral-600: #57534E; */
+/*   --color-neutral-700: #44403C; */
+/*   --color-neutral-800: #292524; */
+/*   --color-neutral-900: #1C1917; */
+/*   --color-neutral-1000: #131110; */
+/* } */
+:root{
   --color-primary: #E11D48;
   --color-primary-dark: #BE123C;
   --color-primary-darker: #9F1239;
-  --color-neutral-50: #FAFAF9;
-  --color-neutral-100: #F5F5F4;
-  --color-neutral-200: #E7E5E4;
-  --color-neutral-300: #D6D3D1;
-  --color-neutral-400: #A8A29E;
-  --color-neutral-500: #78716C;
-  --color-neutral-600: #57534E;
-  --color-neutral-700: #44403C;
-  --color-neutral-800: #292524;
-  --color-neutral-900: #1C1917;
-  --color-neutral-1000: #131110;
+  --color-neutral-50: #FAFAFA;
+  --color-neutral-100: #F4F4F5;
+  --color-neutral-200: #E4E4E7;
+  --color-neutral-300: #D4D4D8;
+  --color-neutral-400: #A1A1AA;
+  --color-neutral-500: #71717A;
+  --color-neutral-600: #52525B;
+  --color-neutral-700: #3F3F46;
+  --color-neutral-800: #27272A;
+  --color-neutral-900: #18181B;
+  --color-neutral-1000: #111113;
 }
 .color-primary{
   color: var(--color-primary);
@@ -915,13 +931,14 @@ input:checked + .slider:before {
 	background-image: linear-gradient(
 		90deg,
 		var(--color-neutral-1000),
-		var(--color-neutral-700),
+		var(--color-neutral-900),
 		var(--color-neutral-1000)
 	);
 	background-size: 200px 100%;
 	background-repeat: no-repeat;
 	display: inline-block;
 	width: 100%;
+  height: 600px;
 	animation: skeleton 1.2s ease-in-out infinite;
 }
 
