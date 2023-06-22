@@ -12,6 +12,14 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
+func HandleWelcomeImage(cfg Config) fiber.Handler {
+	return func(c *fiber.Ctx) error {
+		return c.Render("partials/welcome-image", fiber.Map{
+			"ImageURL": "https://hyppo-files.fra1.cdn.digitaloceanspaces.com/hippo_photo.webp",
+		})
+	}
+}
+
 func HandleLogin(cfg Config) fiber.Handler {
 	return func(c *fiber.Ctx) error {
 		var user User

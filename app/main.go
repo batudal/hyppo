@@ -63,6 +63,7 @@ func main() {
 	app.Get("/logout", HandleLogout(cfg))
 	app.Get("/magic/:email/:magic", HandleMagic(cfg))
 	app.Get("/welcome", HandleWelcomePage(cfg))
+	app.Get("/welcome/image", HandleWelcomeImage(cfg))
 	app.Get("/modal/welcome", HandleWelcomeModal(cfg))
 	app.Static("/assets", "./assets")
 	app.Listen(":80")

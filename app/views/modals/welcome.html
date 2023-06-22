@@ -1,7 +1,9 @@
 <div class="modal-container" _="on closeModal remove me">
   <div class="modal-underlay" _="on click trigger closeModal"></div>
   <div class="welcome-modal" id="welcome-modal">
-    <img src="https://hyppo-files.fra1.cdn.digitaloceanspaces.com/hippo_photo.webp" alt="Hippopotamus" />
+    <div hx-get="/welcome/image" hx-trigger="load" class="welcome-image-container">
+      <div class="skeleton"></div>
+    </div>
     <div class="form-container">
       <div class="create-account" id="create-account">
         <div class="welcome-message">
