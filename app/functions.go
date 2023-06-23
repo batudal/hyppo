@@ -18,6 +18,21 @@ import (
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
+func (m BusinessModel) ParseObjectId() string {
+	return m.ObjectId.Hex()
+}
+func (r Review) ParseObjectId() string {
+	return r.ObjectId.Hex()
+}
+func (u User) ParseObjectId() string {
+	return u.ObjectId.Hex()
+}
+
+func (r Review) ParseDate() string {
+	date := time.Unix(r.UpdatedAt, 0)
+	return date.Format("January 2, 2006")
+}
+
 func (m BusinessModel) IsLast(i int) bool {
 	return i == 3
 }

@@ -1,0 +1,39 @@
+<div class="modal-container" _="on closeModal remove me">
+  <div class="modal-underlay" _="on click trigger closeModal"></div>
+  <div class="reviews-modal">
+    <div class="reviews-modal-header">
+      <h3>Comments on {{.Model.Name}}</h3>
+      <input name="query" class="search-bar body" type="text" placeholder="🔍 Search from {{.Model.Name}} comments"
+        type="search" hx-post="/search/reviews" hx-trigger="keyup changed
+        delay:500ms, search" hx-target="main" hx-swap="innerHTML" />
+      <button class="secondary" hx-get="/review/new?model_id={{.Model.ParseObjectId}}" hx-target=".reviews"
+        hx-swap="beforebegin">📝 New comment</button>
+    </div>
+    <div class="reviews">
+      {{range .Reviews}}
+      <div class="review-container">
+        <img src="{{.Author.Avatar}}" alt="avatar" class="avatar">
+        <div class="review-comment-container">
+          <div class="review-comment-header">
+            <div class="subtle-medium color-primary">@{{.Author.Name}}</div>
+            <p class="detail color-neutral-500">{{.Review.ParseDate}}</p>
+          </div>
+          <div class="review-comment">
+            <p>{{.Review.Comment}}</p>
+          </div>
+          <div class="review-action-bar">
+            <div class="helpful-count">
+              <p class="detail color-neutral-400">{{.Review.HelpfulCount}} people found this helpful 😘</p>
+            </div>
+            <div class="review-action-buttons">
+              <button class="secondary small" hx-get="/review/helpful?review={{.Review.ParseObjectId}}"
+                hx-swap="outerHTML">👍
+                Helpful</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      {{end}}
+    </div>
+  </div>
+</div>

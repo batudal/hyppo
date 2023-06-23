@@ -1,13 +1,14 @@
 <div class="search-tags-container">
   <div class="search-tags">
     <small class="search-tag">🔬 Most searched</small>
-    <small class="search-tag">🧪 Most tested</small>
-    <small class="search-tag">⚡️ Top rated</small>
+    <small class="search-tag" hx-get="/models?sortby=testcount&page=1&order=-1" hx-target="main" hx-swap="innerHTML">🧪
+      Most tested</small>
     <small class="search-tag">🥰️ Most popular</small>
-    <small class="search-tag">🐥 Most recent</small>
-    <small class="search-tag">🎙 Most talked about</small>
+    <small class="search-tag" hx-get="/models?sortby=createdat&page=1&order=-1" hx-target="main" hx-swap="innerHTML">🐥
+      Most recent</small>
+    <small class="search-tag" hx-get="/models?sortby=reviewcount&page=1&order=-1" hx-target="main"
+      hx-swap="innerHTML">🎙 Most talked about</small>
     <small class="search-tag">👩‍💻️ Most used</small>
-    <small class="search-tag">✨ Most rated</small>
     <small class="search-tag">👀 Most viewed</small>
   </div>
 </div>

@@ -2,8 +2,10 @@ package main
 
 import (
 	"context"
+	"fmt"
 	"os"
 	"strconv"
+	"time"
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/stripe/stripe-go/v74/webhook"
@@ -12,10 +14,177 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
-func HandleWelcomeImage(cfg Config) fiber.Handler {
+func Authorize(cfg Config) fiber.Handler {
 	return func(c *fiber.Ctx) error {
-		return c.Render("partials/welcome-image", fiber.Map{
-			"ImageURL": "https://hyppo-files.fra1.cdn.digitaloceanspaces.com/hippo_photo.webp",
+		sess, err := cfg.store.Get(c)
+		if err != nil {
+			return err
+		}
+		if sess.Get("user_id") == nil {
+			return c.Render("modals/welcome", fiber.Map{})
+		}
+		user_id, err := primitive.ObjectIDFromHex(sess.Get("user_id").(string))
+		if err != nil {
+			return err
+		}
+		c.Locals("user_id", user_id)
+		return c.Next()
+	}
+}
+
+func NewReview(cfg Config) fiber.Handler {
+	return func(c *fiber.Ctx) error {
+		coll := cfg.mc.Database("primary").Collection("users")
+		filter := bson.D{{"_id", c.Locals("user_id")}}
+		var user User
+		err := coll.FindOne(context.Background(), filter).Decode(&user)
+		if err != nil {
+			return err
+		}
+		model_id, err := primitive.ObjectIDFromHex(c.Query("model_id"))
+		if err != nil {
+			return err
+		}
+		fmt.Println("model_id: ", model_id)
+		var model BusinessModel
+		models_coll := cfg.mc.Database("primary").Collection("business-models")
+		filter = bson.D{{"_id", model_id}}
+		err = models_coll.FindOne(context.Background(), filter).Decode(&model)
+		if err != nil {
+			return err
+		}
+		return c.Render("partials/new_review", fiber.Map{
+			"Model": model,
+			"User":  user,
+		})
+	}
+}
+
+func HandleReviewsModal(cfg Config) fiber.Handler {
+	return func(c *fiber.Ctx) error {
+		type AuthoredReview struct {
+			Review Review
+			Author User
+		}
+		coll := cfg.mc.Database("primary").Collection("reviews")
+		model_id, err := primitive.ObjectIDFromHex(c.Query("model_id"))
+		if err != nil {
+			return err
+		}
+		filter := bson.D{{"modelid", model_id}}
+		opts := options.Find().SetSort(bson.D{{"createdat", -1}})
+		cursor, err := coll.Find(context.Background(), filter, opts)
+		if err != nil {
+			fmt.Println("modelid: ", model_id)
+			return err
+		}
+		var reviews []Review
+		if err = cursor.All(context.Background(), &reviews); err != nil {
+			return err
+		}
+		authored_reviews := make([]AuthoredReview, len(reviews))
+		for i, review := range reviews {
+			authored_reviews[i].Review = review
+			filter = bson.D{{"_id", review.UserId}}
+			err = cfg.mc.Database("primary").Collection("users").FindOne(context.Background(), filter).Decode(&authored_reviews[i].Author)
+			if err != nil {
+				fmt.Println("failed with reviewid: ", review.UserId)
+				return err
+			}
+		}
+		coll = cfg.mc.Database("primary").Collection("business-models")
+		filter = bson.D{{"_id", model_id}}
+		var model BusinessModel
+		err = coll.FindOne(context.Background(), filter).Decode(&model)
+		if err != nil {
+			return err
+		}
+		return c.Render("modals/reviews", fiber.Map{
+			"Model":   model,
+			"Reviews": authored_reviews,
+		})
+	}
+}
+
+func HandleComment(cfg Config) fiber.Handler {
+	return func(c *fiber.Ctx) error {
+		if c.FormValue("comment") == "" {
+			return c.Render("partials/comment", fiber.Map{
+				"Error": "Comment cannot be empty",
+			})
+		}
+		fmt.Println("model_id: ", c.FormValue("model_id"))
+		model_id, err := primitive.ObjectIDFromHex(c.FormValue("model_id"))
+		if err != nil {
+			return err
+		}
+		user_id := c.Locals("user_id").(primitive.ObjectID)
+		var user User
+		filter := bson.D{{"_id", user_id}}
+		err = cfg.mc.Database("primary").Collection("users").FindOne(context.Background(), filter).Decode(&user)
+		if err != nil {
+			return err
+		}
+		review := Review{
+			ObjectId:  primitive.NewObjectID(),
+			ModelId:   model_id,
+			UserId:    user_id,
+			Comment:   c.FormValue("comment"),
+			CreatedAt: time.Now().Unix(),
+			UpdatedAt: time.Now().Unix(),
+		}
+		reviews_coll := cfg.mc.Database("primary").Collection("reviews")
+		_, err = reviews_coll.InsertOne(context.Background(), review)
+		if err != nil {
+			return err
+		}
+		models_coll := cfg.mc.Database("primary").Collection("business-models")
+		filter = bson.D{{"_id", model_id}}
+		update := bson.D{{"$set", bson.D{{"latestreview", review.Comment}}}}
+		_, err = models_coll.UpdateOne(context.Background(), filter, update)
+		if err != nil {
+			return err
+		}
+		return c.Render("partials/comment", fiber.Map{
+			"User":   user,
+			"Review": review,
+		})
+	}
+}
+
+func HandleSearch(cfg Config) fiber.Handler {
+	return func(c *fiber.Ctx) error {
+		if c.FormValue("query") == "" {
+			feed := Feed{
+				Page:   1,
+				SortBy: "createdat",
+			}
+			filter := bson.D{}
+			opts := options.
+				Find().
+				SetSort(bson.D{{"createdat", -1}}).
+				SetLimit(4)
+			coll := cfg.mc.Database("primary").Collection("business-models")
+			cursor, err := coll.Find(context.Background(), filter, opts)
+			if err = cursor.All(context.TODO(), &feed.Models); err != nil {
+				panic(err)
+			}
+			return c.Render("partials/business-model", fiber.Map{
+				"Feed": feed,
+			})
+		}
+		coll := cfg.mc.Database("primary").Collection("business-models")
+		filter := bson.D{{"$text", bson.D{{"$search", c.FormValue("query")}}}}
+		var models []BusinessModel
+		cursor, err := coll.Find(context.TODO(), filter)
+		if err != nil {
+			return err
+		}
+		if err = cursor.All(context.Background(), &models); err != nil {
+			return err
+		}
+		return c.Render("partials/business-models", fiber.Map{
+			"Models": models,
 		})
 	}
 }
@@ -73,8 +242,7 @@ func HandleMagic(cfg Config) fiber.Handler {
 		if err != nil {
 			return err
 		}
-		sess.Set("email", user.Email)
-		sess.Set("name", user.Name)
+		sess.Set("user_id", user.ObjectId.Hex())
 		if err := sess.Save(); err != nil {
 			return err
 		}
@@ -88,6 +256,10 @@ func HandleGetModels(cfg Config) fiber.Handler {
 		if err != nil {
 			return err
 		}
+		order, err := strconv.Atoi(c.Query("order"))
+		if err != nil {
+			return err
+		}
 		feed := Feed{
 			Page:   int64(page),
 			SortBy: c.Query("sortby"),
@@ -95,7 +267,7 @@ func HandleGetModels(cfg Config) fiber.Handler {
 		filter := bson.D{}
 		opts := options.
 			Find().
-			SetSort(bson.D{{c.Query("sortby"), -1}}).
+			SetSort(bson.D{{c.Query("sortby"), order}}).
 			SetLimit(4).
 			SetSkip(int64(page-1) * 4)
 		coll := cfg.mc.Database("primary").Collection("business-models")
@@ -116,7 +288,7 @@ func IndexPage(cfg Config) fiber.Handler {
 			panic(err)
 		}
 		var user User
-		session_email := sess.Get("email")
+		session_email := sess.Get("user_email")
 		if session_email != nil {
 			coll := cfg.mc.Database("primary").Collection("users")
 			err := coll.FindOne(context.Background(), bson.D{{"email", session_email}}).Decode(&user)

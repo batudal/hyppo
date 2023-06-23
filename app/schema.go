@@ -22,12 +22,23 @@ type BusinessModel struct {
 	Name         string             `bson:"name"`
 	Flatname     string             `bson:"flatname"`
 	Description  string             `bson:"description"`
-	Rating       float64            `bson:"rating"`
-	RatingsCount int64              `bson:"ratingscount"`
 	LatestReview string             `bson:"latestreview"`
+	ReviewCount  int64              `bson:"reviewcount"`
+	LatestTest   string             `bson:"latesttest"`
+	TestCount    int64              `bson:"testcount"`
 	Companies    []string           `bson:"companies"`
 	CreatedAt    int64              `bson:"createdat"`
 	UpdatedAt    int64              `bson:"updatedat"`
+}
+
+type Review struct {
+	ObjectId     primitive.ObjectID `bson:"_id"`
+	ModelId      primitive.ObjectID `bson:"modelid"`
+	UserId       primitive.ObjectID `bson:"userid"`
+	Comment      string             `bson:"comment"`
+	CreatedAt    int64              `bson:"createdat"`
+	UpdatedAt    int64              `bson:"updatedat"`
+	HelpfulCount int64              `bson:"helpfulcount"`
 }
 
 type Feed struct {

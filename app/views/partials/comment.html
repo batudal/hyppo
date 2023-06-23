@@ -1,0 +1,14 @@
+<div class="review-container">
+  <img src="{{.User.Avatar}}" alt="avatar" class="avatar">
+  <div class="review-comment-container">
+    <div class="review-comment-header">
+      <div class="subtle-medium color-primary">@{{.User.Name}}</div>
+    </div>
+    <div class="review-comment">
+      <form class="comment-form" method="post">
+        <p class="detail color-neutral-400">{{.Review.Comment}}</p>
+        <button class="primary" hx-post="/review" hx-target=".reviews" hx-swap="beforebegin">✍️ Edit review</button>
+      </form>
+    </div>
+  </div>
+</div>

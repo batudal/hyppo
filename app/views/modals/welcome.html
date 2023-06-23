@@ -1,39 +1,30 @@
 <div class="modal-container" _="on closeModal remove me">
   <div class="modal-underlay" _="on click trigger closeModal"></div>
   <div class="welcome-modal" id="welcome-modal">
-    <div hx-get="/welcome/image" hx-trigger="load" class="welcome-image-container">
-      <div class="skeleton"></div>
-    </div>
-    <div class="form-container">
-      <div class="create-account" id="create-account">
-        <div class="welcome-message">
-          <h3>🥳 Welcome Innovator</h3>
-          <p class='subtle color-neutral-400 centered'>Please use the same email address you’ve made your payment with
-            to
-            login to
-            your account.</p>
-        </div>
-        <form class="email-form" hx-post="/login" hx-target="#create-account" hx-swap="outerHTML">
-          <input type="email" class="email-input subtle-medium" name="email" placeholder="Email" />
-          <button class="primary" type="submit">🧙‍♀️ Send magic link</button>
-        </form>
-        <div class="login-divider">
-          <div class="divider"></div>
-          <p class="detail color-neutral-400">OR CONTINUE WITH</p>
-          <div class="divider"></div>
-        </div>
-        <a class="subtle-medium" href="https://google.com"><button class="secondary" id="google-button" type="button">
-            <img src="https://hyppo-files.fra1.cdn.digitaloceanspaces.com/google.png" alt="Google" id="google-icon" />
-            Login with Google</button></a>
-        <p class="detail color-neutral-400" id="terms">By clicking continue, you agree to our <span>Terms of
-            Service</span> and Privacy
-          Policy.
-        </p>
-        <div id="no-account">
-          <p class="subtle color-neutral-400">🙀 Don't have an account yet?</p>
-          <button class="secondary" id="signup-button" type="button">👉 Sign up</button>
-        </div>
+    <div class="create-account" id="create-account">
+      <div class="welcome-message">
+        <h3>🥳 Welcome Innovator</h3>
+        <p class='subtle color-neutral-400 centered'>Please use the same email address you’ve made your payment with
+          to
+          login to
+          your account.</p>
       </div>
+      <form class="email-form" hx-post="/login" hx-target="#create-account" hx-swap="outerHTML">
+        <input type="email" class="email-input subtle-medium" name="email" placeholder="Email" />
+        <button class="primary" type="submit">🧙‍♀️ Send magic link</button>
+      </form>
+      <div class="login-divider">
+        <div class="divider"></div>
+        <p class="detail color-neutral-400">OR CONTINUE WITH</p>
+        <div class="divider"></div>
+      </div>
+      <a class="subtle-medium" href="https://google.com"><button class="secondary" id="google-button" type="button">
+          <img src="https://hyppo-files.fra1.cdn.digitaloceanspaces.com/google.png" alt="Google" id="google-icon" />
+          Login with Google</button></a>
+      <p class="detail color-neutral-400" id="terms">By clicking continue, you agree to our <a href="/terms">Terms of
+          Service</a> and <a href="/privacy">Privacy
+          Policy</a>.
+      </p>
     </div>
   </div>
 </div>

@@ -1,7 +1,6 @@
 package main
 
 import (
-	"log"
 	"os"
 
 	"github.com/gofiber/fiber/v2"
@@ -56,22 +55,25 @@ func main() {
 		courier: courier_client,
 	}
 	app.Use(logger.New())
+	// Pages
 	app.Get("/", IndexPage(cfg))
-	app.Post("/create_user", HandleCreateUser(cfg))
+	app.Get("/welcome", HandleWelcomePage(cfg)) // stripe callback
+	// Webhooks
+	app.Post("/create_user", HandleCreateUser(cfg)) // stripe webhook
+	// Partials
 	app.Get("/models", HandleGetModels(cfg))
 	app.Post("/login", HandleLogin(cfg))
+	app.Get("/review/new", Authorize(cfg), NewReview(cfg))
+	// Redirects
 	app.Get("/logout", HandleLogout(cfg))
 	app.Get("/magic/:email/:magic", HandleMagic(cfg))
-	app.Get("/welcome", HandleWelcomePage(cfg))
-	app.Get("/welcome/image", HandleWelcomeImage(cfg))
-	app.Get("/modal/welcome", HandleWelcomeModal(cfg))
+	// Modals
+	app.Get("/modals/welcome", HandleWelcomeModal(cfg))
+	app.Get("/modals/reviews", Authorize(cfg), HandleReviewsModal(cfg))
+	// Search
+	app.Post("/search", HandleSearch(cfg))
+	// Actions
+	app.Post("/review", Authorize(cfg), HandleComment(cfg))
 	app.Static("/assets", "./assets")
 	app.Listen(":80")
-}
-
-func PrintRequestHeader() fiber.Handler {
-	return func(c *fiber.Ctx) error {
-		log.Println(string(c.Request().Header.Peek("Authorization")))
-		return c.Next()
-	}
 }
