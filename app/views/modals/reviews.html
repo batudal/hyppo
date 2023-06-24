@@ -2,12 +2,12 @@
   <div class="modal-underlay" _="on click trigger closeModal"></div>
   <div class="reviews-modal">
     <div class="reviews-modal-header">
-      <h3>Comments on {{.Model.Name}}</h3>
-      <input name="query" class="search-bar body" type="text" placeholder="🔍 Search from {{.Model.Name}} comments"
+      <h3>Reviews on {{.Model.Name}}</h3>
+      <input name="query" class="search-bar body" type="text" placeholder="🔍 Search from {{.Model.Name}} reviews"
         type="search" hx-post="/search/reviews" hx-trigger="keyup changed
         delay:500ms, search" hx-target="main" hx-swap="innerHTML" />
       <button class="secondary" hx-get="/review/new?model_id={{.Model.ParseObjectId}}" hx-target=".reviews"
-        hx-swap="beforebegin">📝 New comment</button>
+        hx-swap="beforebegin">📝 New review</button>
     </div>
     <div class="reviews">
       {{range .Reviews}}
@@ -15,7 +15,7 @@
         <img src="{{.Author.Avatar}}" alt="avatar" class="avatar">
         <div class="review-comment-container">
           <div class="review-comment-header">
-            <div class="subtle-medium color-primary">@{{.Author.Name}}</div>
+            <div class="subtle-medium color-primary">{{.Author.Name}}</div>
             <p class="detail color-neutral-500">{{.Review.ParseDate}}</p>
           </div>
           <div class="review-comment">

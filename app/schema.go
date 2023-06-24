@@ -12,6 +12,7 @@ type User struct {
 	Email         string             `bson:"email"`
 	Website       string             `bson:"website"`
 	Socials       []string           `bson:"socials"`
+	Membership    bool               `bson:"membership"`
 	CreatedAt     int64              `bson:"createdat"`
 	UpdatedAt     int64              `bson:"updatedat"`
 	DeactivatedAt int64              `bson:"deactivatedat"`

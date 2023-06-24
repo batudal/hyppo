@@ -5,12 +5,14 @@ import (
 	"fmt"
 	"os"
 	"strconv"
+	"sync"
 	"time"
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/stripe/stripe-go/v74/webhook"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
+	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
@@ -27,19 +29,23 @@ func Authorize(cfg Config) fiber.Handler {
 		if err != nil {
 			return err
 		}
-		c.Locals("user_id", user_id)
+		var user User
+		coll := cfg.mc.Database("primary").Collection("users")
+		filter := bson.D{{"_id", user_id}}
+		err = coll.FindOne(context.Background(), filter).Decode(&user)
+		if err != nil {
+			return err
+		}
+		c.Locals("user", user)
 		return c.Next()
 	}
 }
 
 func NewReview(cfg Config) fiber.Handler {
 	return func(c *fiber.Ctx) error {
-		coll := cfg.mc.Database("primary").Collection("users")
-		filter := bson.D{{"_id", c.Locals("user_id")}}
-		var user User
-		err := coll.FindOne(context.Background(), filter).Decode(&user)
-		if err != nil {
-			return err
+		user := c.Locals("user").(User)
+		if !user.Membership {
+			return fiber.NewError(fiber.StatusForbidden, "You must be a member to review models.")
 		}
 		model_id, err := primitive.ObjectIDFromHex(c.Query("model_id"))
 		if err != nil {
@@ -48,7 +54,7 @@ func NewReview(cfg Config) fiber.Handler {
 		fmt.Println("model_id: ", model_id)
 		var model BusinessModel
 		models_coll := cfg.mc.Database("primary").Collection("business-models")
-		filter = bson.D{{"_id", model_id}}
+		filter := bson.D{{"_id", model_id}}
 		err = models_coll.FindOne(context.Background(), filter).Decode(&model)
 		if err != nil {
 			return err
@@ -59,6 +65,16 @@ func NewReview(cfg Config) fiber.Handler {
 		})
 	}
 }
+
+// func NextReviews(cfg Config) fiber.Handler {
+//   return func(c *fiber.Ctx) error {
+//     createdat, err := strconv.Atoi(c.Query("createdat"))
+//     if err != nil {
+//       return err
+//     }
+
+//   }
+// }
 
 func HandleReviewsModal(cfg Config) fiber.Handler {
 	return func(c *fiber.Ctx) error {
@@ -72,26 +88,33 @@ func HandleReviewsModal(cfg Config) fiber.Handler {
 			return err
 		}
 		filter := bson.D{{"modelid", model_id}}
-		opts := options.Find().SetSort(bson.D{{"createdat", -1}})
+		opts := options.Find().SetSort(bson.D{{"createdat", -1}}).SetLimit(4).SetSkip(0)
 		cursor, err := coll.Find(context.Background(), filter, opts)
 		if err != nil {
-			fmt.Println("modelid: ", model_id)
 			return err
 		}
 		var reviews []Review
 		if err = cursor.All(context.Background(), &reviews); err != nil {
 			return err
 		}
+		wg := sync.WaitGroup{}
 		authored_reviews := make([]AuthoredReview, len(reviews))
 		for i, review := range reviews {
-			authored_reviews[i].Review = review
-			filter = bson.D{{"_id", review.UserId}}
-			err = cfg.mc.Database("primary").Collection("users").FindOne(context.Background(), filter).Decode(&authored_reviews[i].Author)
-			if err != nil {
-				fmt.Println("failed with reviewid: ", review.UserId)
-				return err
-			}
+			wg.Add(1)
+			go func(i int, review Review, authored_reviews []AuthoredReview, wg *sync.WaitGroup) {
+				authored_reviews[i].Review = review
+				fmt.Println(i, " ", review)
+				filter = bson.D{{"_id", review.UserId}}
+				err = cfg.mc.Database("primary").Collection("users").FindOne(context.Background(), filter).Decode(&authored_reviews[i].Author)
+				if err != nil {
+					authored_reviews[i].Author = User{
+						Name: "Deleted User",
+					}
+				}
+				wg.Done()
+			}(i, review, authored_reviews, &wg)
 		}
+		wg.Wait()
 		coll = cfg.mc.Database("primary").Collection("business-models")
 		filter = bson.D{{"_id", model_id}}
 		var model BusinessModel
@@ -142,6 +165,11 @@ func HandleComment(cfg Config) fiber.Handler {
 		filter = bson.D{{"_id", model_id}}
 		update := bson.D{{"$set", bson.D{{"latestreview", review.Comment}}}}
 		_, err = models_coll.UpdateOne(context.Background(), filter, update)
+		if err != nil {
+			return err
+		}
+		update_review_count := bson.D{{"$inc", bson.D{{"reviewcount", 1}}}}
+		_, err = models_coll.UpdateOne(context.Background(), filter, update_review_count)
 		if err != nil {
 			return err
 		}
@@ -323,18 +351,28 @@ func HandleCreateUser(cfg Config) fiber.Handler {
 		switch event.Type {
 		case "invoice.paid":
 			if event.Data.Object["billing_reason"] == "subscription_create" {
-				//genrate new mongo id
-				id := primitive.NewObjectID()
-				user := User{
-					ObjectId: id,
-					Email:    event.Data.Object["customer_email"].(string),
-					Name:     event.Data.Object["customer_name"].(string),
-				}
 				coll := cfg.mc.Database("primary").Collection("users")
-				_, err = coll.InsertOne(context.Background(), user)
-				if err != nil {
+				fmt.Println("customer email:", event.Data.Object["customer_email"].(string))
+				var user User
+				err := coll.FindOne(context.Background(), bson.D{{"email", event.Data.Object["customer_email"].(string)}}).Decode(&user)
+				if err == mongo.ErrNoDocuments {
+					user := User{
+						ObjectId:   primitive.NewObjectID(),
+						Email:      event.Data.Object["customer_email"].(string),
+						Name:       event.Data.Object["customer_name"].(string),
+						Membership: true,
+					}
+					_, err = coll.InsertOne(context.Background(), user)
+					if err != nil {
+						return err
+					}
+					return c.SendStatus(fiber.StatusOK)
+				} else if err != nil {
 					return err
 				}
+				filter := bson.D{{"email", event.Data.Object["customer_email"].(string)}}
+				update := bson.D{{"$set", bson.D{{"membership", true}}}}
+				_, err = coll.UpdateOne(context.Background(), filter, update)
 			}
 		default:
 		}

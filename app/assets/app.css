@@ -993,8 +993,6 @@ input:checked + .slider:before {
   flex-direction: column;
   gap: 8px;
   width: 100%;
-  padding: 16px;
-  padding-top:10px;
 }
 .review-action-bar{
   display: flex;
@@ -1043,6 +1041,16 @@ textarea:focus{
 .comment-form{
   display: flex;
   flex-direction: column;
+  align-items: flex-end;
   width: 100%;
   gap:12px;
+}
+
+.review-user-buttons{
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  justify-content: flex-end;
 }
