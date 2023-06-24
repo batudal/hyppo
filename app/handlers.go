@@ -344,7 +344,7 @@ func IndexPage(cfg Config) fiber.Handler {
 
 func HandleCreateMember(cfg Config) fiber.Handler {
 	return func(c *fiber.Ctx) error {
-		event, err := webhook.ConstructEvent(c.Body(), c.GetReqHeaders()["Stripe-Signature"], os.Getenv("STRIPE_CREATEUSER_SECRET"))
+		event, err := webhook.ConstructEvent(c.Body(), c.GetReqHeaders()["Stripe-Signature"], os.Getenv("STRIPE_SUBSCRIBE_SECRET"))
 		if err != nil {
 			return fiber.NewError(fiber.StatusBadRequest, "Error verifying webhook signature")
 		}
@@ -388,7 +388,7 @@ func HandleCreateMember(cfg Config) fiber.Handler {
 
 func HandleCancelMember(cfg Config) fiber.Handler {
 	return func(c *fiber.Ctx) error {
-		event, err := webhook.ConstructEvent(c.Body(), c.GetReqHeaders()["Stripe-Signature"], os.Getenv("STRIPE_CREATEUSER_SECRET"))
+		event, err := webhook.ConstructEvent(c.Body(), c.GetReqHeaders()["Stripe-Signature"], os.Getenv("STRIPE_CANCEL_SECRET"))
 		if err != nil {
 			return fiber.NewError(fiber.StatusBadRequest, "Error verifying webhook signature")
 		}
