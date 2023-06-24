@@ -342,7 +342,7 @@ func IndexPage(cfg Config) fiber.Handler {
 	}
 }
 
-func HandleCreateUser(cfg Config) fiber.Handler {
+func HandleCreateMember(cfg Config) fiber.Handler {
 	return func(c *fiber.Ctx) error {
 		event, err := webhook.ConstructEvent(c.Body(), c.GetReqHeaders()["Stripe-Signature"], os.Getenv("STRIPE_CREATEUSER_SECRET"))
 		if err != nil {
@@ -352,15 +352,16 @@ func HandleCreateUser(cfg Config) fiber.Handler {
 		case "invoice.paid":
 			if event.Data.Object["billing_reason"] == "subscription_create" {
 				coll := cfg.mc.Database("primary").Collection("users")
-				fmt.Println("customer email:", event.Data.Object["customer_email"].(string))
 				var user User
 				err := coll.FindOne(context.Background(), bson.D{{"email", event.Data.Object["customer_email"].(string)}}).Decode(&user)
 				if err == mongo.ErrNoDocuments {
 					user := User{
-						ObjectId:   primitive.NewObjectID(),
-						Email:      event.Data.Object["customer_email"].(string),
-						Name:       event.Data.Object["customer_name"].(string),
-						Membership: true,
+						ObjectId:     primitive.NewObjectID(),
+						Email:        event.Data.Object["customer_email"].(string),
+						Name:         event.Data.Object["customer_name"].(string),
+						Membership:   true,
+						MembershipAt: time.Now().Unix(),
+						StripeId:     event.Data.Object["customer"].(string),
 					}
 					_, err = coll.InsertOne(context.Background(), user)
 					if err != nil {
@@ -371,8 +372,36 @@ func HandleCreateUser(cfg Config) fiber.Handler {
 					return err
 				}
 				filter := bson.D{{"email", event.Data.Object["customer_email"].(string)}}
-				update := bson.D{{"$set", bson.D{{"membership", true}}}}
+				update := bson.D{
+					{"$set",
+						bson.D{
+							{"membership", true},
+							{"membershipat", time.Now().Unix()},
+							{"stripeid", event.Data.Object["customer"].(string)}}}}
 				_, err = coll.UpdateOne(context.Background(), filter, update)
+			}
+		default:
+		}
+		return c.SendStatus(fiber.StatusOK)
+	}
+}
+
+func HandleCancelMember(cfg Config) fiber.Handler {
+	return func(c *fiber.Ctx) error {
+		event, err := webhook.ConstructEvent(c.Body(), c.GetReqHeaders()["Stripe-Signature"], os.Getenv("STRIPE_CREATEUSER_SECRET"))
+		if err != nil {
+			return fiber.NewError(fiber.StatusBadRequest, "Error verifying webhook signature")
+		}
+		fmt.Println("event type:", event.Type)
+		switch event.Type {
+		case "subscription_schedule.aborted", "subscription_schedule.canceled":
+			fmt.Println("data ojb:", event.Data.Object)
+			coll := cfg.mc.Database("primary").Collection("users")
+			filter := bson.D{{"stripeid", event.Data.Object["customer"].(string)}}
+			update := bson.D{{"$set", bson.D{{"membership", false}}}}
+			_, err = coll.UpdateOne(context.Background(), filter, update)
+			if err != nil {
+				return err
 			}
 		default:
 		}

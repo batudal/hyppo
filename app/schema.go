@@ -13,6 +13,8 @@ type User struct {
 	Website       string             `bson:"website"`
 	Socials       []string           `bson:"socials"`
 	Membership    bool               `bson:"membership"`
+	MembershipAt  int64              `bson:"membershipat"`
+	StripeId      string             `bson:"stripeid"`
 	CreatedAt     int64              `bson:"createdat"`
 	UpdatedAt     int64              `bson:"updatedat"`
 	DeactivatedAt int64              `bson:"deactivatedat"`

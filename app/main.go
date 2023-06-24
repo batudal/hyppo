@@ -59,7 +59,8 @@ func main() {
 	app.Get("/", IndexPage(cfg))
 	app.Get("/welcome", HandleWelcomePage(cfg)) // stripe callback
 	// Webhooks
-	app.Post("/create_user", HandleCreateUser(cfg)) // stripe webhook
+	app.Post("/hooks/subscribe", HandleCreateMember(cfg)) // stripe webhook
+	app.Post("/hooks/cancel", HandleCancelMember(cfg))    // stripe webhook
 	// Partials
 	app.Get("/models", HandleGetModels(cfg))
 	app.Post("/login", HandleLogin(cfg))
