@@ -7,6 +7,7 @@ import (
 	"context"
 
 	"github.com/batudal/hyppo/config"
+	"github.com/batudal/hyppo/schema"
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/logger"
 	"github.com/gofiber/fiber/v2/middleware/session"
@@ -28,7 +29,7 @@ func main() {
 
 func setup() (config.Config, *fiber.App) {
 	redis_client := redis.NewClient(&redis.Options{
-		Addr:     "localhost:6379",
+		Addr:     "redis:6379",
 		Password: "",
 		DB:       0,
 	})
@@ -46,6 +47,7 @@ func setup() (config.Config, *fiber.App) {
 		CookieHTTPOnly: true,
 		CookieSameSite: "Strict",
 	})
+	store.RegisterType(&schema.User{})
 	stripe.Key = os.Getenv("STRIPE_SECRET_KEY")
 	uri := os.Getenv("MONGODB_URI")
 	mongodb_client, err := mongo.Connect(context.TODO(), options.Client().ApplyURI(uri))
