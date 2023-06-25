@@ -7,7 +7,6 @@ import (
 	"io/ioutil"
 	"net/http"
 	"os"
-	"strings"
 	"time"
 
 	"github.com/dgrijalva/jwt-go"
@@ -28,17 +27,14 @@ type GoogleClaims struct {
 }
 
 func AuthorizeGoogleJWT(c *fiber.Ctx) (GoogleClaims, error) {
-	header := c.GetReqHeaders()["Authorization"]
-	header_array := strings.Split(header, " ")
-	var token string
-	if len(header_array) > 1 {
-		token = header_array[1]
-	} else {
-		return GoogleClaims{}, fiber.NewError(fiber.StatusUnauthorized, "Invalid token")
+	type GoogleToken struct {
+		Credential string `json:"credential"`
 	}
-	google_claims, err := validateGoogleJWT(token)
+	var idtoken GoogleToken
+	c.BodyParser(&idtoken)
+	google_claims, err := validateGoogleJWT(idtoken.Credential)
 	if err != nil {
-		return GoogleClaims{}, fiber.NewError(fiber.StatusUnauthorized, "Invalid token")
+		return GoogleClaims{}, fiber.NewError(fiber.StatusUnauthorized, err.Error())
 	}
 	return google_claims, nil
 }

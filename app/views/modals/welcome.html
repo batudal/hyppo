@@ -1,3 +1,4 @@
+<script src="https://accounts.google.com/gsi/client" async defer></script>
 <div class="modal-container" _="on closeModal remove me">
   <div class="modal-underlay" _="on click trigger closeModal"></div>
   <div class="welcome-modal" id="welcome-modal">
@@ -19,12 +20,13 @@
         <div class="divider"></div>
       </div>
       <div id="g_id_onload" data-client_id="1027487422953-t0tvf06vd1p971pdi15kk10tftkng1jo.apps.googleusercontent.com"
-        data-context="signin" data-login_uri="https://hyppo.io/login/google" data-auto_select="true"
-        data-itp_support="true">
+        data-context="signin" data-ux_mode="popup" data-login_uri="http://localhost/login/google"
+        data-auto_prompt="false" hidden>
       </div>
-      <!-- <a class="subtle-medium" href="https://google.com"><button class="secondary" id="google-button" type="button"> -->
-      <!--     <img src="https://hyppo-files.fra1.cdn.digitaloceanspaces.com/google.png" alt="Google" id="google-icon" /> -->
-      <!--     Login with Google</button></a> -->
+
+      <div class="g_id_signin google-button" data-type="standard" data-shape="rectangular" data-theme="filled_black"
+        data-text="signin_with" data-size="large" data-logo_alignment="left" data-width="352px">
+      </div>
       <p class="detail color-neutral-400" id="terms">By clicking continue, you agree to our <a href="/terms">Terms of
           Service</a> and <a href="/privacy">Privacy
           Policy</a>.
@@ -32,3 +34,8 @@
     </div>
   </div>
 </div>
+<script>
+  async function googleLogin(response) {
+    console.log('response', response);
+  }
+</script>
