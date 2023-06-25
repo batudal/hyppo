@@ -12,7 +12,7 @@
         <h2>🧪 {{$model.TestCount}} tests</h2>
         <p class="medium color-neutral-400">🎙 {{$model.ReviewCount}} reviews</p>
       </div>
-      <button class="secondary" hx-get="/modals/reviews?model_id={{$model.ParseObjectId}}" hx-target="body"
+      <button class="secondary" hx-get="/modals/reviews?model_id={{$model.ObjectId.Hex}}" hx-target="body"
         hx-swap="beforeend">👀 See reviews</button>
     </div>
     <div class="divider"></div>
@@ -36,7 +36,7 @@
         <h2>🧪 {{$model.TestCount}} tests</h2>
         <p class="medium color-neutral-400">🎙 {{$model.ReviewCount}} reviews</p>
       </div>
-      <button class="secondary" hx-get="/modals/reviews?model_id={{$model.ParseObjectId}}" hx-target="body"
+      <button class="secondary" hx-get="/modals/reviews?model_id={{$model.ObjectId.Hex}}" hx-target="body"
         hx-swap="beforeend">👀 See reviews</button>
     </div>
     <div class="divider"></div>

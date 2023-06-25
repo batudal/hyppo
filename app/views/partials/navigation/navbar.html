@@ -4,7 +4,7 @@
     <input name="query" class="search-bar body" type="text" placeholder="🔍 Search from 100+ business models"
       type="search" hx-post="/search" hx-trigger="keyup changed
         delay:500ms, search" hx-target="main" hx-swap="innerHTML" />
-    {{ if .User.Name}}
+    {{ if .User}}
     {{ template "partials/navigation/user-menu" . }}
     {{ else }}
     {{ template "partials/login-button" . }}
