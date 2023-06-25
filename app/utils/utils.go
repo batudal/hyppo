@@ -3,7 +3,6 @@ package utils
 import (
 	"context"
 	"errors"
-	"fmt"
 	"math/rand"
 	"time"
 
@@ -56,8 +55,6 @@ func SendEmail(client *courier.Client, to string, template string, data map[stri
 }
 
 func SaveMagic(client *redis.Client, mail_address string, magic string) error {
-	fmt.Println("mail_address: ", mail_address)
-	fmt.Println("magic: ", magic)
 	key := "magic:" + mail_address
 	err := client.Set(context.Background(), key, magic, 300*time.Second).Err()
 	if err != nil {

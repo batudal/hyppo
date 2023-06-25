@@ -1,6 +1,12 @@
 <div class="menu">
   <div class="user-menu-button" _="on click toggle .hide on .user-menu-modal">
+    {{if .User.Avatar}}
     <img src="{{.User.Avatar}}" class="avatar" alt="avatar" />
+    {{else}}
+    <div class="pseudo-avatar">
+      <img src="../../assets/user.svg" alt="user avatar" />
+    </div>
+    {{end}}
     <img src="../../assets/caret-down.svg" class="icon" alt="caret-down" />
   </div>
   <nav class="user-menu-modal hide" _="on mouseleave toggle .hide">

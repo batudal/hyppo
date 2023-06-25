@@ -37,6 +37,8 @@ func HandleSubscribe(cfg config.Config) fiber.Handler {
 						Membership:   true,
 						MembershipAt: time.Now().Unix(),
 						StripeId:     event.Data.Object["customer"].(string),
+						CreatedAt:    time.Now().Unix(),
+						UpdatedAt:    time.Now().Unix(),
 					}
 					_, err = coll.InsertOne(context.Background(), user)
 					if err != nil {

@@ -20,3 +20,7 @@ type User struct {
 	UpdatedAt     int64              `bson:"updatedat"`
 	DeactivatedAt int64              `bson:"deactivatedat"`
 }
+
+func (u *User) GetInitial() string {
+	return string(u.Name[0])
+}

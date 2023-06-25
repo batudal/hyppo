@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"context"
+	"time"
 
 	"github.com/batudal/hyppo/config"
 	"github.com/batudal/hyppo/middleware"
@@ -85,6 +86,7 @@ func HandleGoogleLogin(cfg config.Config) fiber.Handler {
 		}
 		name := claims.FirstName + " " + claims.LastName
 		email := claims.Email
+		picture := claims.Picture
 		var user schema.User
 		coll := cfg.Mc.Database("primary").Collection("users")
 		err = coll.FindOne(context.Background(), bson.D{{"email", email}}).Decode(&user)
@@ -92,6 +94,9 @@ func HandleGoogleLogin(cfg config.Config) fiber.Handler {
 			result, err := coll.InsertOne(context.Background(), bson.D{
 				{"name", name},
 				{"email", email},
+				{"createdat", time.Now().Unix()},
+				{"updatedat", time.Now().Unix()},
+				{"avatar", picture},
 			})
 			if err != nil {
 				return err
