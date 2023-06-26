@@ -1,12 +1,18 @@
 <div class="review-container">
+  {{if .User.Avatar}}
   <img src="{{.User.Avatar}}" alt="avatar" class="avatar">
+  {{else}}
+  <div class="pseudo-avatar">
+    <img src="../../assets/user.svg" alt="user avatar" />
+  </div>
+  {{end}}
   <div class="review-comment-container">
     <div class="review-comment-header">
       <div class="subtle-medium color-primary">{{.User.Name}}</div>
     </div>
     <div class="review-comment">
       <form class="comment-form" method="post">
-        <input type="text" name="model_id" value="{{.Model.ParseObjectId}}" hidden style="display:none">
+        <input type="text" name="model_id" value="{{.Model.ObjectId.Hex}}" hidden style="display:none">
         <textarea name="comment" class="body" placeholder="Write your review..." rows="6"></textarea>
         <div class="review-action-buttons">
           <button class="secondary" _="on click remove closest .review-container">🙈 Discard review</button>

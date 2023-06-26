@@ -19,8 +19,9 @@ func HandleMagicLink(cfg config.Config) fiber.Handler {
 		coll := cfg.Mc.Database("primary").Collection("users")
 		err := coll.FindOne(context.Background(), bson.D{{"email", c.FormValue("email")}}).Decode(&user)
 		if err != nil {
-			return c.Render("partials/no-account", fiber.Map{
-				"Email": c.FormValue("email"),
+			return c.Render("partials/account-error", fiber.Map{
+				"Message": "Email not found",
+				"Email":   c.FormValue("email"),
 			})
 		}
 		magic := utils.RandomString(16)

@@ -1,0 +1,29 @@
+{{range .Reviews}}
+<div class="review-container">
+  {{if .Author.Avatar}}
+  <img src="{{.Author.Avatar}}" alt="avatar" class="avatar">
+  {{else}}
+  <div class="pseudo-avatar">
+    <img src="../../assets/user.svg" alt="user avatar" />
+  </div>
+  {{end}}
+  <div class="review-comment-container">
+    <div class="review-comment-header">
+      <div class="subtle-medium color-primary">{{.Author.Name}}</div>
+      <p class="detail color-neutral-500">{{.Review.ParseDate}}</p>
+    </div>
+    <div class="review-comment">
+      <p>{{.Review.Comment}}</p>
+    </div>
+    <div class="review-action-bar">
+      <div class="helpful-count">
+        <p class="detail color-neutral-400">{{.Review.HelpfulCount}} people found this helpful 😘</p>
+      </div>
+      <div class="review-action-buttons">
+        <button class="secondary small" hx-get="/review/helpful?review={{.Review.ObjectId.Hex}}" hx-swap="outerHTML">👍
+          Helpful</button>
+      </div>
+    </div>
+  </div>
+</div>
+{{end}}

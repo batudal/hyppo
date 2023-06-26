@@ -4,36 +4,37 @@
     <div class="reviews-modal-header">
       <h3>Reviews on {{.Model.Name}}</h3>
       <input name="query" class="search-bar body" type="text" placeholder="🔍 Search from {{.Model.Name}} reviews"
-        type="search" hx-post="/search/reviews" hx-trigger="keyup changed
-        delay:500ms, search" hx-target="main" hx-swap="innerHTML" />
-      <button class="secondary" hx-get="/review/new?model_id={{.Model.ParseObjectId}}" hx-target=".reviews"
+        type="search" hx-post="/search/reviews?model_id={{.Model.ObjectId.Hex}}" hx-trigger="keyup changed
+        delay:500ms, search" hx-target=".reviews" hx-swap="innerHTML" />
+      <button class="secondary" hx-get="/review/new?model_id={{.Model.ObjectId.Hex}}" hx-target=".reviews"
         hx-swap="beforebegin">📝 New review</button>
     </div>
     <div class="reviews">
+      {{if .Reviews}}
       {{range .Reviews}}
-      <div class="review-container">
-        <img src="{{.Author.Avatar}}" alt="avatar" class="avatar">
-        <div class="review-comment-container">
-          <div class="review-comment-header">
-            <div class="subtle-medium color-primary">{{.Author.Name}}</div>
-            <p class="detail color-neutral-500">{{.Review.ParseDate}}</p>
+      {{if eq .Review.UserId $.User.ObjectId}}
+      {{template "partials/review/user_comment" .}}
+      {{else}}
+      {{template "partials/review/comment" .}}
+      {{end}}
+      {{end}}
+      {{else}}
+      <div class="not-found">
+        <h3>😱 No reviews for "{{.Model.Name}}" yet</h3>
+        <p class="color-neutral-300">Do you have any experience with "{{.Model.Name}}" model? How do you think it should
+          be
+          executed? Let us know.</p>
+        <form class="comment-form" method="post">
+          <input type="text" name="model_id" value="{{.Model.ObjectId.Hex}}" hidden style="display:none">
+          <textarea name="comment" class="body" placeholder="Write your review..." rows="6"></textarea>
+          <div class="review-action-buttons">
+            <button class="secondary" _="on click remove closest .review-container">🙈 Discard review</button>
+            <button class="primary" hx-post="/review" hx-target="closest .reviews" hx-swap="innerHTML">📬
+              Post
+              review</button>
           </div>
-          <div class="review-comment">
-            <p>{{.Review.Comment}}</p>
-          </div>
-          <div class="review-action-bar">
-            <div class="helpful-count">
-              <p class="detail color-neutral-400">{{.Review.HelpfulCount}} people found this helpful 😘</p>
-            </div>
-            <div class="review-action-buttons">
-              <button class="secondary small" hx-get="/review/helpful?review={{.Review.ParseObjectId}}"
-                hx-swap="outerHTML">👍
-                Helpful</button>
-            </div>
-          </div>
-        </div>
+        </form>
       </div>
       {{end}}
     </div>
   </div>
-</div>

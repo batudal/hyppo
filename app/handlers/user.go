@@ -69,8 +69,9 @@ func HandleSignup(cfg config.Config) fiber.Handler {
 		coll := cfg.Mc.Database("primary").Collection("users")
 		err := coll.FindOne(context.Background(), bson.D{{"email", c.FormValue("email")}}).Decode(&user)
 		if err != mongo.ErrNoDocuments {
-			return c.Render("partials/account-exists", fiber.Map{
-				"Email": c.FormValue("email"),
+			return c.Render("partials/account-error", fiber.Map{
+				"Message": "Email already registered",
+				"Email":   c.FormValue("email"),
 			})
 		}
 		user.ObjectId = primitive.NewObjectID()

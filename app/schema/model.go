@@ -1,10 +1,11 @@
 package schema
 
 import (
+	"html/template"
+
 	"github.com/gomarkdown/markdown"
 	"github.com/gomarkdown/markdown/html"
 	"github.com/gomarkdown/markdown/parser"
-	"html/template"
 
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )

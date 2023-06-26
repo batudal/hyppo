@@ -783,6 +783,7 @@ input:checked + .slider:before {
   z-index: -1;
   background: rgba(19, 17, 16, 0.1);
   backdrop-filter: blur(14px);
+  scroll-behavior: none;
 }
 .welcome-modal{
   position:absolute;
@@ -945,15 +946,15 @@ input:checked + .slider:before {
   display: flex;
   max-width: 920px;
   width:90%;
-  max-height: 90vh;
+  height:90vh;
   padding: 6px 20px;
+  padding-top:0px;
   flex-direction: column;
   border-radius: 6px;
   border: 1px solid var(--color-neutral-700);
   background: var(--color-neutral-900);
   overflow-y: scroll;
   box-sizing: border-box;
-  
 }
 .reviews-modal-header{
   position:sticky;
@@ -965,6 +966,8 @@ input:checked + .slider:before {
   width: 100%;
   padding: 12px 0px;
   border-bottom: 1px solid var(--color-neutral-800);
+  top:0px;
+  background: var(--color-neutral-900);
 }
 .reviews {
   display: flex;
@@ -1091,4 +1094,23 @@ textarea:focus{
 .pseudo-avatar img {
   width:20px;
   height:20px;
+}
+.loading{
+  position:absolute;
+}
+
+.not-found{
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  justify-content: flex-start;
+  gap: 16px;
+  max-width: 600px;
+  width:90%;
+  padding: 24px;
+  border-radius: 6px;
+}
+.not-found p,h3,textarea{
+  align-self: stretch;
+  text-align:start;
 }
