@@ -22,6 +22,7 @@ type Model struct {
 	Companies    []string           `bson:"companies"`
 	CreatedAt    int64              `bson:"createdat"`
 	UpdatedAt    int64              `bson:"updatedat"`
+	ContentData  string             `bson:"contentdata"`
 }
 
 type Feed struct {

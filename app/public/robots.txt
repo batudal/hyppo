@@ -9,7 +9,8 @@
 User-agent: *
 Disallow: /signup
 Disallow: /login/
+Disallow: /logout
 Disallow: /magiclink
 Disallow: /hooks/
-Disallow: /logout
+Disallow: /partials/
 Sitemap: https://hyppo.io/sitemap.xml

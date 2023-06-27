@@ -13,6 +13,7 @@
   --color-neutral-800: #27272A;
   --color-neutral-900: #18181B;
   --color-neutral-1000: #111113;
+  --color-green: #22C55E;
 }
 .color-primary{
   color: var(--color-primary);
@@ -64,6 +65,9 @@
 }
 .bg-primary-darker{
   background-color: var(--color-primary-darker);
+}
+.bg-green{
+  background-color: var(--color-green);
 }
 
 /* Box sizing rules */
@@ -619,9 +623,10 @@ small{
   justify-content: center;
   gap: 12px;
   width: 100%;
-  max-width: 800px;
+  max-width: 848px;
   padding: 0px 24px;
   margin-bottom:12px;
+  box-sizing: border-box;
 }
 .model{
   display:flex;
@@ -633,6 +638,7 @@ small{
   gap: 16px;
   width: 100%;
   max-width: 800px;
+  box-sizing: border-box;
 }
 .light-theme .model{
   background-color: var(--color-neutral-100);
@@ -643,7 +649,7 @@ small{
   flex-direction: row;
   align-items: center;
   justify-content: space-between;
-  gap: 16px;
+  gap: 8px;
 }
 .divider {
   width: 100%;

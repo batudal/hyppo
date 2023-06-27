@@ -18,6 +18,7 @@ func Routes(app *fiber.App, cfg config.Config) {
 	app.Post("/hooks/cancel", handlers.HandleCancelMember(cfg)) // stripe webhook
 	app.Get("/models", handlers.HandleGetModels(cfg))
 	app.Get("/business-model/:flatname", handlers.ModelPage(cfg))
+	app.Get("/partials/model", handlers.HandleGetModel(cfg))
 	app.Get("/review/new", middleware.Authorize(cfg), handlers.NewReview(cfg))
 	app.Get("/logout", middleware.Authorize(cfg), handlers.HandleLogout(cfg))
 	app.Get("/modals/welcome", handlers.HandleWelcomeModal(cfg))
@@ -25,6 +26,8 @@ func Routes(app *fiber.App, cfg config.Config) {
 	app.Post("/search", handlers.HandleSearch(cfg))
 	app.Post("/search/reviews", handlers.HandleSearchReviews(cfg))
 	app.Post("/review", middleware.Authorize(cfg), handlers.HandleNewReview(cfg))
+	app.Patch("/newsletter/model/subscribe", handlers.HandleSubscribeModels(cfg))
+	app.Patch("/newsletter/model/cancel", handlers.HandleUnsubscribeModels(cfg))
 	app.Static("/assets", "./assets")
 	app.Static("/", "./public")
 	app.Listen(":80")

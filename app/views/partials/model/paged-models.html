@@ -16,6 +16,8 @@
       </div>
       <button class="secondary" hx-get="/modals/reviews?model_id={{$model.ObjectId.Hex}}" hx-target="body"
         hx-swap="beforeend">👀 See reviews</button>
+      <button class="primary" hx-get="/partials/model?model_id={{$model.ObjectId.Hex}}" hx-target="main"
+        hx-swap="innerHTML" hx-push="/business-model/{{$model.Name}}">Expand {{$model.Name}}</button>
     </div>
     <div class="divider"></div>
     <div class="model-companies">

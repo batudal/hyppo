@@ -9,8 +9,26 @@ import (
 	"github.com/batudal/hyppo/schema"
 	"github.com/gofiber/fiber/v2"
 	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
+
+func HandleGetModel(cfg config.Config) fiber.Handler {
+	return func(c *fiber.Ctx) error {
+		model_id, err := primitive.ObjectIDFromHex(c.Query("model_id"))
+		if err != nil {
+			return err
+		}
+		coll := cfg.Mc.Database("primary").Collection("business-models")
+		filter := bson.D{{"_id", model_id}}
+		var model schema.Model
+		err = coll.FindOne(context.Background(), filter).Decode(&model)
+		if err != nil {
+			return err
+		}
+		return c.Render("pages/model", fiber.Map{"Model": model})
+	}
+}
 
 func HandleGetModels(cfg config.Config) fiber.Handler {
 	return func(c *fiber.Ctx) error {

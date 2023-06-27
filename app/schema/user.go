@@ -19,6 +19,8 @@ type User struct {
 	CreatedAt     int64              `bson:"createdat"`
 	UpdatedAt     int64              `bson:"updatedat"`
 	DeactivatedAt int64              `bson:"deactivatedat"`
+	NewsModel     bool               `bson:"newsmodel"`
+	NewsMethod    bool               `bson:"newsmethod"`
 }
 
 func (u *User) GetInitial() string {
