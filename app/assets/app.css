@@ -632,6 +632,7 @@ small{
   border-radius: 6px;
   gap: 16px;
   width: 100%;
+  max-width: 800px;
 }
 .light-theme .model{
   background-color: var(--color-neutral-100);

@@ -19,16 +19,6 @@
 </head>
 
 <body _="on every htmx:beforeSend NProgress.start() on every htmx:afterOnLoad NProgress.done()">
-  {{if eq .Modal "welcome"}}
-  {{template "modals/welcome" .}}
-  {{end}}
-  <div class="hero">
-    {{template "partials/banner" .}}
-    <div class="hero-container">
-      <h1>Find and <span>validate</span><br />your next<br />business model</h1>
-    </div>
-    {{template "partials/social-proof" .}}
-  </div>
   {{template "partials/navigation/navbar" .}}
   {{template "partials/model/search-tags" .}}
   <main>

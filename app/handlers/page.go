@@ -10,6 +10,22 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
+func ModelPage(cfg config.Config) fiber.Handler {
+	return func(c *fiber.Ctx) error {
+		flatname := c.Params("flatname")
+		coll := cfg.Mc.Database("primary").Collection("business-models")
+		filter := bson.D{{"flatname", flatname}}
+		var model schema.Model
+		err := coll.FindOne(context.Background(), filter).Decode(&model)
+		if err != nil {
+			return err
+		}
+		return c.Render("pages/model", fiber.Map{
+			"Model": model,
+		}, "layouts/page")
+	}
+}
+
 func IndexPage(cfg config.Config) fiber.Handler {
 	return func(c *fiber.Ctx) error {
 		sess, err := cfg.Store.Get(c)

@@ -1,0 +1,23 @@
+<article class="model">
+  <div class="model-bar">
+    <div class="ratings-container">
+      <h2 class="color-neutral-200">{{.Model.Name}}</h2>
+      <h2>🧪 {{.Model.TestCount}} tests</h2>
+      <p class="medium color-neutral-400">🎙 {{.Model.ReviewCount}} reviews</p>
+    </div>
+    <button class="secondary" hx-get="/modals/reviews?model_id={{.Model.ObjectId.Hex}}" hx-target="body"
+      hx-swap="beforeend">👀 See reviews</button>
+  </div>
+  <div class="divider"></div>
+  <div class="model-companies">
+    {{range .Model.Companies}}
+    <small class="tag">{{.}}</small>
+    {{end}}
+  </div>
+  <div class="model-contents" id="{{.Model.Flatname}}">
+    <div class="divider"></div>
+    <div class="model-description">
+      {{.Model.ParseDescription}}
+    </div>
+  </div>
+</article>

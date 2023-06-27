@@ -1,0 +1,15 @@
+#        c~~p ,---------. 
+#   ,---'oo  )           \
+#  ( O O                  )/
+#   `=^='                 /
+#         \    ,     .   /
+#         \\  |-----'|  /
+#         ||__|    |_|__|
+
+User-agent: *
+Disallow: /signup
+Disallow: /login/
+Disallow: /magiclink
+Disallow: /hooks/
+Disallow: /logout
+Sitemap: https://hyppo.io/sitemap.xml
