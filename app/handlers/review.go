@@ -2,21 +2,16 @@ package handlers
 
 import (
 	"context"
-	"sync"
 	"time"
 
 	"github.com/batudal/hyppo/config"
 	"github.com/batudal/hyppo/schema"
+	"github.com/batudal/hyppo/utils"
 	"github.com/gofiber/fiber/v2"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
-
-type AuthoredReview struct {
-	Review schema.Review
-	Author schema.User
-}
 
 func NewReview(cfg config.Config) fiber.Handler {
 	return func(c *fiber.Ctx) error {
@@ -83,23 +78,7 @@ func HandleReviewsModal(cfg config.Config) fiber.Handler {
 				"Model": model,
 			})
 		}
-		wg := sync.WaitGroup{}
-		authored_reviews := make([]AuthoredReview, len(reviews))
-		for i, review := range reviews {
-			wg.Add(1)
-			go func(i int, review schema.Review, authored_reviews []AuthoredReview, wg *sync.WaitGroup) {
-				authored_reviews[i].Review = review
-				filter = bson.D{{"_id", review.UserId}}
-				err = cfg.Mc.Database("primary").Collection("users").FindOne(context.Background(), filter).Decode(&authored_reviews[i].Author)
-				if err != nil {
-					authored_reviews[i].Author = schema.User{
-						Name: "Deleted User",
-					}
-				}
-				wg.Done()
-			}(i, review, authored_reviews, &wg)
-		}
-		wg.Wait()
+		authored_reviews := utils.GetAuthoredReviews(cfg, reviews)
 		coll = cfg.Mc.Database("primary").Collection("business-models")
 		filter = bson.D{{"_id", model_id}}
 		var model schema.Model
@@ -143,23 +122,7 @@ func HandleSearchReviews(cfg config.Config) fiber.Handler {
 				"Query": query,
 			})
 		}
-		wg := sync.WaitGroup{}
-		authored_reviews := make([]AuthoredReview, len(reviews))
-		for i, review := range reviews {
-			wg.Add(1)
-			go func(i int, review schema.Review, authored_reviews []AuthoredReview, wg *sync.WaitGroup) {
-				authored_reviews[i].Review = review
-				filter = bson.D{{"_id", review.UserId}}
-				err = cfg.Mc.Database("primary").Collection("users").FindOne(context.Background(), filter).Decode(&authored_reviews[i].Author)
-				if err != nil {
-					authored_reviews[i].Author = schema.User{
-						Name: "Deleted User",
-					}
-				}
-				wg.Done()
-			}(i, review, authored_reviews, &wg)
-		}
-		wg.Wait()
+		authored_reviews := utils.GetAuthoredReviews(cfg, reviews)
 		return c.Render("partials/review/search-reviews", fiber.Map{
 			"Reviews": authored_reviews,
 		})

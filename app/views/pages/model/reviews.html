@@ -1,0 +1,12 @@
+<div class="model-page">
+  <div class="tab-list">
+    <div hx-get="/model_tabs/model?model_id={{.Model.ObjectId.Hex}}" class="tab-item">📋 Business
+      Model</div>
+    <div hx-get="/model_tabs/tests?model_id={{.Model.ObjectId.Hex}}" class="tab-item">🧪 Validation
+      Tests</div>
+    <div hx-get="/model_tabs/reviews?model_id={{.Model.ObjectId.Hex}}" class="tab-item selected">🎙 Reviews</div>
+  </div>
+  <article class="model">
+    {{template "partials/reviews" .}}
+  </article>
+</div>

@@ -261,7 +261,6 @@ button.primary:active{
   background-color: var(--color-primary-darker);
 }
 button.secondary{
-  display:flex;
   background-color: var(--color-neutral-800);
   border: 1px solid var(--color-neutral-700);
   color: var(--color-neutral-50);
@@ -392,6 +391,14 @@ h3{
 }
 .light-theme h2{
   color: var(--color-neutral-900);
+}
+
+h4{
+  font-size: 30px;
+  font-family: Inter;
+  font-weight: 600;
+  line-height: 36px;
+  color: var(--color-neutral-50);
 }
 
 .navbar {
@@ -1120,4 +1127,96 @@ textarea:focus{
 .not-found p,h3,textarea{
   align-self: stretch;
   text-align:start;
+}
+.model-page{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  width: 100%;
+  padding: 24px 24px;
+}
+
+.membership-card-type{
+  letter-spacing: 1.4px;
+  text-transform: uppercase;
+  color: var(--color-primary);
+  font-weight: 600;
+}
+
+.membership-cards{
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  width: 100%;
+  padding: 24px;
+}
+
+.centered{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.membership-card{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 240px;
+  gap: 32px;
+  padding: 24px 32px;
+  border-radius: 6px;
+  border: 1px solid var(--color-neutral-700);
+  background: var(--color-neutral-900);
+  cursor: pointer;
+}
+.membership-card-features{
+  display: flex;
+  flex-direction: column;
+}
+.membership-card-header{
+  display:flex;
+  flex-direction: column;
+  align-items: center;
+}
+.membership-price{
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+.superscript { position: relative; top: -0.5em; font-size: 80%; }
+
+.tab-list{
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  padding: 6px;
+  background: var(--color-neutral-900);
+  border-radius: 6px;
+  gap:6px;
+}
+.tab-item {
+  display: flex;
+  padding: 6px 12px;
+  border-radius: 3px;
+  cursor: pointer;
+  background: var(--color-neutral-900);
+  color: var(--color-neutral-50);
+  text-decoration: none;
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: 20px;
+}
+.tab-item:hover{
+  background: var(--color-neutral-800);
+}
+.tab-item:active{
+  background: var(--color-neutral-700);
+}
+.selected{
+  background: var(--color-neutral-800);
 }

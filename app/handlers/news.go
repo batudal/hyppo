@@ -44,7 +44,7 @@ func HandleSubscribeModels(cfg config.Config) fiber.Handler {
 			return err
 		}
 		return c.Status(fiber.StatusOK).Render("partials/subscribed", fiber.Map{
-			"Subject": "Business Models",
+			"Subject": "business model",
 			"Email":   user.Email,
 		})
 	}

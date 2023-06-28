@@ -1,6 +1,6 @@
 {{if and .User (not .User.NewsModel)}}
 <footer id="footer">
-  <form class="footer" hx-patch="/newsletter/model/subscribe?user=true" hx-swap="outerHTML">
+  <form class="footer" hx-patch="/newsletter/model/subscribe?user=true" hx-target="footer" hx-swap="outerHTML">
     <p class="medium">Get fresh business models sent to 👉 </p>
     <input class="search-bar" type="email" name="email" placeholder="{{.User.Email}}" value="{{.User.Email}}">
     <button class="primary" type="submit" name="button">💌
@@ -9,7 +9,7 @@
 </footer>
 {{else if (not .User)}}
 <footer>
-  <form class="footer" hx-patch="/newsletter/model/subscribe?user=false" hx-swap="outerHTML">
+  <form class="footer" hx-patch="/newsletter/model/subscribe?user=false" hx-target="footer" hx-swap="outerHTML">
     <p class="medium">Get fresh business models sent to 👉 </p>
     <input class="search-bar" type="email" name="email" placeholder="Type your email">
     <button class="primary" type="submit" name="button">💌 Subscribe</button>

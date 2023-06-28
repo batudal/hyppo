@@ -1,0 +1,30 @@
+<div class="modal-container" _="on closeModal remove me">
+  <div class="modal-underlay centered" _="on click trigger
+    closeModal">
+    <div class="membership-cards">
+      {{range .Memberships}}
+      <div class="membership-card">
+        <div class="membership-card-header">
+          <p class="membership-card-type">{{.Type}}</p>
+          <div class="membership-price">
+            {{if eq .Price 0}}
+            <h4>Free</h4>
+            {{else}}
+            <h4>${{.Price}}</h4>
+            {{end}}
+            <p class="color-neutral-400">/{{.Period}}</p>
+          </div>
+        </div>
+        <div class="membership-card-features">
+          {{range .Features}}
+          <p class="detail">{{.}}</p>
+          {{end}}
+        </div>
+        <a href="{{.Url}}">
+          <button class="{{.ButtonType}}" style="width:100%">{{.ButtonText}}</button>
+        </a>
+      </div>
+      {{end}}
+    </div>
+  </div>
+</div>

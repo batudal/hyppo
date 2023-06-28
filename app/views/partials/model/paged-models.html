@@ -7,30 +7,6 @@
   <div class="loading" hx-get='/models?sortby={{$sortby}}&page={{$model.Increment $page}}&order=-1'
     hx-trigger="revealed" hx-target="closest .models" hx-swap="afterend" _="on reveal remove me"></div>
   {{end}}
-  <article class="model">
-    <div class="model-bar">
-      <div class="ratings-container" _="on click toggle .hide on #{{$model.Flatname}}">
-        <h2 class="color-neutral-200">{{$model.Name}}</h2>
-        <h2>🧪 {{$model.TestCount}} tests</h2>
-        <p class="medium color-neutral-400">🎙 {{$model.ReviewCount}} reviews</p>
-      </div>
-      <button class="secondary" hx-get="/modals/reviews?model_id={{$model.ObjectId.Hex}}" hx-target="body"
-        hx-swap="beforeend">👀 See reviews</button>
-      <button class="primary" hx-get="/partials/model?model_id={{$model.ObjectId.Hex}}" hx-target="main"
-        hx-swap="innerHTML" hx-push="/business-model/{{$model.Name}}">Expand {{$model.Name}}</button>
-    </div>
-    <div class="divider"></div>
-    <div class="model-companies">
-      {{range $model.Companies}}
-      <small class="tag">{{.}}</small>
-      {{end}}
-    </div>
-    <div class="model-contents hide" id="{{$model.Flatname}}">
-      <div class="divider"></div>
-      <div class="model-description">
-        {{$model.ParseDescription}}
-      </div>
-    </div>
-  </article>
+  {{template "partials/model" $model}}
   {{end}}
 </div>

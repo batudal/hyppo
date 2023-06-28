@@ -3,15 +3,46 @@ package utils
 import (
 	"context"
 	"errors"
+	"fmt"
 	"math/rand"
+	"sync"
 	"time"
 
+	"github.com/batudal/hyppo/config"
 	"github.com/batudal/hyppo/schema"
 	"github.com/gofiber/fiber/v2"
 	"github.com/redis/go-redis/v9"
 	"github.com/trycourier/courier-go/v2"
+	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
 )
+
+func GetAuthoredReviews(cfg config.Config, reviews []schema.Review) []schema.AuthoredReview {
+	fmt.Println("Hello getting authored reviews")
+	var wg sync.WaitGroup
+	wg.Add(len(reviews))
+	authored_reviews := make([]schema.AuthoredReview, len(reviews))
+	for i, review := range reviews {
+		go func(i int, review schema.Review, authored_reviews []schema.AuthoredReview, wg *sync.WaitGroup) {
+			defer wg.Done()
+			authored_reviews[i].Review = review
+			filter := bson.D{{"_id", review.UserId}}
+			err := cfg.Mc.
+				Database("primary").
+				Collection("users").
+				FindOne(context.Background(), filter).
+				Decode(&authored_reviews[i].Author)
+			if err != nil {
+				authored_reviews[i].Author = schema.User{
+					Name: "Deleted User",
+				}
+			}
+		}(i, review, authored_reviews, &wg)
+	}
+	wg.Wait()
+	fmt.Println("Hello returning authored reviews")
+	return authored_reviews
+}
 
 func CheckMembership(db *mongo.Client) fiber.Handler {
 	return func(c *fiber.Ctx) error {
