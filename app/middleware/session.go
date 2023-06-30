@@ -12,7 +12,7 @@ func Authorize(cfg config.Config) fiber.Handler {
 			return err
 		}
 		if sess.Get("user") == nil {
-			return c.Render("modals/welcome", fiber.Map{})
+			return c.Redirect("/welcome")
 		}
 		return c.Next()
 	}
