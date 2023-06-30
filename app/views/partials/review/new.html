@@ -13,7 +13,7 @@
     <div class="review-comment">
       <form class="comment-form" method="post">
         <input type="text" name="model_id" value="{{.Model.ObjectId.Hex}}" hidden style="display:none">
-        <textarea name="comment" class="body" placeholder="Write your review..." rows="6"></textarea>
+        <textarea name="comment" class="comment-input" placeholder="Write a review..." required></textarea>
         <div class="review-action-buttons">
           <button class="secondary" _="on click remove closest .review-container">🙈 Discard review</button>
           <button class="primary" hx-post="/review" hx-target="closest .review-container" hx-swap="outerHTML">📬 Post

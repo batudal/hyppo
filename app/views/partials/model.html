@@ -2,13 +2,15 @@
   <div class="model-bar">
     <div class="ratings-container">
       <h2 class="color-neutral-200">{{.Name}}</h2>
-      <h2>🧪 {{.TestCount}} tests</h2>
+      <p class="medium color-neutral-400">🧪 {{.TestCount}} tests</p>
       <p class="medium color-neutral-400">🎙 {{.ReviewCount}} reviews</p>
     </div>
-    <button class="secondary" hx-get="/modals/reviews?model_id={{.ObjectId.Hex}}" hx-target="body"
-      hx-swap="beforeend">👀 See reviews</button>
-    <a href="/business-model/{{.Flatname}}">
-      <button class="primary">Go to {{.Name}}</button></a>
+    <div class="model-card-buttons">
+      <button class="secondary" hx-get="/modals/reviews?model_id={{.ObjectId.Hex}}" hx-target="body"
+        hx-swap="beforeend">👀 See reviews</button>
+      <a href="/business-model/{{.Flatname}}">
+        <button class="primary">Go to {{.Name}}</button></a>
+    </div>
   </div>
   <div class="divider"></div>
   <div class="model-companies">
@@ -19,7 +21,7 @@
   <div class="model-contents" id="{{.Flatname}}">
     <div class="divider"></div>
     <div class="model-description">
-      {{.ParseDescription}}
+      {{.Content}}
     </div>
   </div>
 </article>

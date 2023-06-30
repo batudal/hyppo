@@ -24,7 +24,7 @@
     <div class="menu-section">
       <a href="/account" class="menu-item subtle-medium">🧑‍🔧 Settings</a>
       <a href="/account" class="menu-item subtle-medium">🧾 Billing</a>
-      <a href="/logout" class="menu-item subtle-medium">✌️ Log out</a>
-    </div>
+      <div hx-get="/logout" hx-target="closest .menu" hx-swap="outerHTML" class="menu-item subtle-medium">✌️ Log out</a>
+      </div>
   </nav>
 </div>

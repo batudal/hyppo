@@ -12,6 +12,7 @@ import (
 
 type Model struct {
 	ObjectId     primitive.ObjectID `bson:"_id"`
+	CategoryId   primitive.ObjectID `bson:"categoryid"`
 	Name         string             `bson:"name"`
 	Flatname     string             `bson:"flatname"`
 	Description  string             `bson:"description"`
@@ -22,7 +23,7 @@ type Model struct {
 	Companies    []string           `bson:"companies"`
 	CreatedAt    int64              `bson:"createdat"`
 	UpdatedAt    int64              `bson:"updatedat"`
-	ContentData  string             `bson:"contentdata"`
+	Content      template.HTML      `bson:"content"`
 }
 
 type Feed struct {

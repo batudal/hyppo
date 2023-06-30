@@ -49,7 +49,7 @@ func HandleLogout(cfg config.Config) fiber.Handler {
 			return err
 		}
 		sess.Destroy()
-		return c.Redirect("/")
+		return c.Render("partials/navigation/login-button", fiber.Map{})
 	}
 }
 

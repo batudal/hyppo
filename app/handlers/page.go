@@ -20,7 +20,13 @@ func ModelPage(cfg config.Config) fiber.Handler {
 		if err != nil {
 			return err
 		}
+		sess, err := cfg.Store.Get(c)
+		if err != nil {
+			return err
+		}
+		user := sess.Get("user")
 		return c.Render("pages/model", fiber.Map{
+			"User":  user,
 			"Model": model,
 		}, "layouts/page")
 	}
@@ -45,6 +51,7 @@ func IndexPage(cfg config.Config) fiber.Handler {
 			return err
 		}
 		return c.Render("pages/index", fiber.Map{
+			"View": "feed",
 			"User": user,
 			"Feed": feed,
 		}, "layouts/main")

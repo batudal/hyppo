@@ -3,7 +3,6 @@ package utils
 import (
 	"context"
 	"errors"
-	"fmt"
 	"math/rand"
 	"sync"
 	"time"
@@ -17,8 +16,7 @@ import (
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
-func GetAuthoredReviews(cfg config.Config, reviews []schema.Review) []schema.AuthoredReview {
-	fmt.Println("Hello getting authored reviews")
+func GetAuthoredReviews(cfg config.Config, reviews []schema.Review, user schema.User) []schema.AuthoredReview {
 	var wg sync.WaitGroup
 	wg.Add(len(reviews))
 	authored_reviews := make([]schema.AuthoredReview, len(reviews))
@@ -37,10 +35,26 @@ func GetAuthoredReviews(cfg config.Config, reviews []schema.Review) []schema.Aut
 					Name: "Deleted User",
 				}
 			}
+			coll_helpfuls := cfg.Mc.Database("primary").Collection("helpfuls")
+			filter = bson.D{{"reviewid", review.ObjectId}}
+			count, err := coll_helpfuls.CountDocuments(context.Background(), filter)
+			if err != nil {
+				authored_reviews[i].HelpfulCount = 0
+			} else {
+				authored_reviews[i].HelpfulCount = count
+			}
+			if !user.ObjectId.IsZero() {
+				filter = bson.D{{"reviewid", review.ObjectId}, {"userid", user.ObjectId}}
+				count, err = coll_helpfuls.CountDocuments(context.Background(), filter)
+				if err != nil {
+					authored_reviews[i].Helpful = false
+				} else {
+					authored_reviews[i].Helpful = count > 0
+				}
+			}
 		}(i, review, authored_reviews, &wg)
 	}
 	wg.Wait()
-	fmt.Println("Hello returning authored reviews")
 	return authored_reviews
 }
 

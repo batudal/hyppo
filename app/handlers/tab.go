@@ -49,12 +49,17 @@ func ReviewsTab(cfg config.Config) fiber.Handler {
 		if err = cursor.All(context.Background(), &reviews); err != nil {
 			return err
 		}
+		var user *schema.User
 		sess, err := cfg.Store.Get(c)
 		if err != nil {
 			return err
 		}
-		user := sess.Get("user")
-		authored_reviews := utils.GetAuthoredReviews(cfg, reviews)
+		if sess.Get("user") != nil {
+			user = sess.Get("user").(*schema.User)
+		} else {
+			user = &schema.User{}
+		}
+		authored_reviews := utils.GetAuthoredReviews(cfg, reviews, *user)
 		return c.Render("pages/model/reviews", fiber.Map{
 			"User":    user,
 			"Model":   model,

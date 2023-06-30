@@ -12,16 +12,24 @@
       <p class="detail color-neutral-500">{{.Review.ParseDate}}</p>
     </div>
     <div class="review-comment">
-      <p class="color-neutral-50">{{.Review.Comment}}</p>
+      <pre class="color-neutral-50">{{.Review.Comment}}</pre>
       <div class="review-action-bar">
         <div class="helpful-count">
           <p class="detail color-neutral-400">{{.Review.HelpfulCount}} people found this helpful 😘</p>
         </div>
+        {{if .Helpful}}
         <div class="review-action-buttons">
-          <button class="secondary small" hx-get="/review/helpful?review={{.Review.ObjectId.Hex}}"
-            hx-swap="outerHTML">👍
+          <button class="secondary small" hx-post="/review/unhelpful?review_id={{.Review.ObjectId.Hex}}"
+            hx-target="closest .review-container" hx-swap="outerHTML">👎
+            Unhelpful</button>
+        </div>
+        {{else}}
+        <div class="review-action-buttons">
+          <button class="secondary small" hx-post="/review/helpful?review_id={{.Review.ObjectId.Hex}}"
+            hx-target="closest .review-container" hx-swap="outerHTML">👍
             Helpful</button>
         </div>
+        {{end}}
       </div>
     </div>
   </div>

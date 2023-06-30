@@ -20,6 +20,8 @@ func Routes(app *fiber.App, cfg config.Config) {
 	app.Get("/business-model/:flatname", handlers.ModelPage(cfg))
 	app.Get("/partials/model", handlers.HandleGetModel(cfg))
 	app.Get("/review/new", middleware.Authorize(cfg), handlers.NewReview(cfg))
+	app.Post("/review/helpful", middleware.Authorize(cfg), handlers.HandleHelpfulReview(cfg))
+	app.Post("/review/unhelpful", middleware.Authorize(cfg), handlers.HandleUnhelpfulReview(cfg))
 	app.Get("/logout", middleware.Authorize(cfg), handlers.HandleLogout(cfg))
 	app.Get("/modals/welcome", handlers.HandleWelcomeModal(cfg))
 	app.Get("/modals/reviews", middleware.Authorize(cfg), handlers.HandleReviewsModal(cfg))

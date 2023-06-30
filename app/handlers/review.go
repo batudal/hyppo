@@ -10,8 +10,99 @@ import (
 	"github.com/gofiber/fiber/v2"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
+	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
+
+func HandleUnhelpfulReview(cfg config.Config) fiber.Handler {
+	return func(c *fiber.Ctx) error {
+		var review schema.Review
+		var author schema.User
+		sess, err := cfg.Store.Get(c)
+		if err != nil {
+			return err
+		}
+		user := sess.Get("user").(*schema.User)
+		review_id, err := primitive.ObjectIDFromHex(c.Query("review_id"))
+		if err != nil {
+			return err
+		}
+		coll := cfg.Mc.Database("primary").Collection("helpfuls")
+		filter := bson.D{{"reviewid", review_id}, {"userid", user.ObjectId}}
+		_, err = coll.DeleteOne(context.Background(), filter)
+		if err != nil {
+			return err
+		}
+		coll_reviews := cfg.Mc.Database("primary").Collection("reviews")
+		filter = bson.D{{"_id", review_id}}
+		update := bson.D{{"$inc", bson.D{{"helpfulcount", -1}}}}
+		result := coll_reviews.FindOneAndUpdate(context.Background(), filter, update, options.FindOneAndUpdate().SetReturnDocument(options.After))
+		if result.Err() != nil {
+			return result.Err()
+		}
+		result.Decode(&review)
+		coll_users := cfg.Mc.Database("primary").Collection("users")
+		filter = bson.D{{"_id", review.UserId}}
+		err = coll_users.FindOne(context.Background(), filter).Decode(&author)
+		if err != nil {
+			return err
+		}
+		return c.Render("partials/review/comment", fiber.Map{
+			"Review":  review,
+			"Author":  author,
+			"Helpful": false,
+		})
+	}
+}
+
+func HandleHelpfulReview(cfg config.Config) fiber.Handler {
+	return func(c *fiber.Ctx) error {
+		var review schema.Review
+		var author schema.User
+		sess, err := cfg.Store.Get(c)
+		if err != nil {
+			return err
+		}
+		user := sess.Get("user").(*schema.User)
+		review_id, err := primitive.ObjectIDFromHex(c.Query("review_id"))
+		if err != nil {
+			return err
+		}
+		var helpful schema.Helpful
+		coll := cfg.Mc.Database("primary").Collection("helpfuls")
+		filter := bson.D{{"reviewid", review_id}, {"userid", user.ObjectId}}
+		err = coll.FindOne(context.Background(), filter).Decode(&helpful)
+		if err == mongo.ErrNoDocuments {
+			helpful = schema.Helpful{
+				ReviewId: review_id,
+				UserId:   user.ObjectId,
+			}
+			_, err = coll.InsertOne(context.Background(), helpful)
+			if err != nil {
+				return err
+			}
+			coll_reviews := cfg.Mc.Database("primary").Collection("reviews")
+			filter := bson.D{{"_id", review_id}}
+			update := bson.D{{"$inc", bson.D{{"helpfulcount", 1}}}}
+			result := coll_reviews.FindOneAndUpdate(context.Background(), filter, update, options.FindOneAndUpdate().SetReturnDocument(options.After))
+			if result.Err() != nil {
+				return result.Err()
+			}
+			result.Decode(&review)
+			coll_users := cfg.Mc.Database("primary").Collection("users")
+			filter = bson.D{{"_id", review.UserId}}
+			err = coll_users.FindOne(context.Background(), filter).Decode(&author)
+			if err != nil {
+				return err
+			}
+		}
+		return c.Render("partials/review/comment", fiber.Map{
+			"Review":  review,
+			"Author":  author,
+			"Helpful": true,
+		})
+	}
+}
 
 func NewReview(cfg config.Config) fiber.Handler {
 	return func(c *fiber.Ctx) error {
@@ -78,7 +169,7 @@ func HandleReviewsModal(cfg config.Config) fiber.Handler {
 				"Model": model,
 			})
 		}
-		authored_reviews := utils.GetAuthoredReviews(cfg, reviews)
+		authored_reviews := utils.GetAuthoredReviews(cfg, reviews, *user)
 		coll = cfg.Mc.Database("primary").Collection("business-models")
 		filter = bson.D{{"_id", model_id}}
 		var model schema.Model
@@ -96,6 +187,11 @@ func HandleReviewsModal(cfg config.Config) fiber.Handler {
 
 func HandleSearchReviews(cfg config.Config) fiber.Handler {
 	return func(c *fiber.Ctx) error {
+		sess, err := cfg.Store.Get(c)
+		if err != nil {
+			return err
+		}
+		user := sess.Get("user").(*schema.User)
 		query := c.FormValue("query")
 		coll := cfg.Mc.Database("primary").Collection("reviews")
 		model_id, err := primitive.ObjectIDFromHex(c.Query("model_id"))
@@ -122,7 +218,7 @@ func HandleSearchReviews(cfg config.Config) fiber.Handler {
 				"Query": query,
 			})
 		}
-		authored_reviews := utils.GetAuthoredReviews(cfg, reviews)
+		authored_reviews := utils.GetAuthoredReviews(cfg, reviews, *user)
 		return c.Render("partials/review/search-reviews", fiber.Map{
 			"Reviews": authored_reviews,
 		})
