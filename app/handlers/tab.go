@@ -8,6 +8,7 @@ import (
 	"github.com/gofiber/fiber/v2"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
+	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
 func ModelTab(cfg config.Config) fiber.Handler {
@@ -41,29 +42,34 @@ func ReviewsTab(cfg config.Config) fiber.Handler {
 			return err
 		}
 		coll := cfg.Mc.Database("primary").Collection("reviews")
+		opts := options.Find().SetSort(bson.D{{"createdat", -1}})
 		var reviews []schema.Review
-		cursor, err := coll.Find(context.Background(), bson.M{"modelid": model_id})
+		cursor, err := coll.Find(context.Background(), bson.M{"modelid": model_id}, opts)
 		if err != nil {
 			return err
 		}
 		if err = cursor.All(context.Background(), &reviews); err != nil {
 			return err
 		}
-		var user *schema.User
+		user := &schema.User{}
 		sess, err := cfg.Store.Get(c)
 		if err != nil {
 			return err
 		}
 		if sess.Get("user") != nil {
 			user = sess.Get("user").(*schema.User)
+			authored_reviews := utils.GetAuthoredReviews(cfg, reviews, *user)
+			return c.Render("pages/model/reviews", fiber.Map{
+				"User":    user,
+				"Model":   model,
+				"Reviews": authored_reviews,
+			})
 		} else {
-			user = &schema.User{}
+			authored_reviews := utils.GetAuthoredReviews(cfg, reviews, *user)
+			return c.Render("pages/model/reviews", fiber.Map{
+				"Model":   model,
+				"Reviews": authored_reviews,
+			})
 		}
-		authored_reviews := utils.GetAuthoredReviews(cfg, reviews, *user)
-		return c.Render("pages/model/reviews", fiber.Map{
-			"User":    user,
-			"Model":   model,
-			"Reviews": authored_reviews,
-		})
 	}
 }

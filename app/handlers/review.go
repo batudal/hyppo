@@ -14,6 +14,118 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
+func HandleDiscardReview(cfg config.Config) fiber.Handler {
+	return func(c *fiber.Ctx) error {
+		sess, err := cfg.Store.Get(c)
+		if err != nil {
+			return err
+		}
+		user := sess.Get("user").(*schema.User)
+		coll := cfg.Mc.Database("primary").Collection("reviews")
+		review_id, err := primitive.ObjectIDFromHex(c.Query("review_id"))
+		if err != nil {
+			return err
+		}
+		var review schema.Review
+		filter := bson.D{{"_id", review_id}, {"userid", user.ObjectId}}
+		err = coll.FindOne(context.Background(), filter).Decode(&review)
+		if err != nil {
+			return err
+		}
+		return c.Render("partials/review/user-comment", fiber.Map{
+			"Review": review,
+			"Author": user,
+		})
+	}
+}
+
+func HandleEditReview(cfg config.Config) fiber.Handler {
+	return func(c *fiber.Ctx) error {
+		sess, err := cfg.Store.Get(c)
+		if err != nil {
+			return err
+		}
+		user := sess.Get("user").(*schema.User)
+		updated_comment := c.FormValue("comment")
+		coll := cfg.Mc.Database("primary").Collection("reviews")
+		review_id, err := primitive.ObjectIDFromHex(c.Query("review_id"))
+		if err != nil {
+			return err
+		}
+		var review schema.Review
+		filter := bson.D{{"_id", review_id}, {"userid", user.ObjectId}}
+		update := bson.D{{"$set", bson.D{{"comment", updated_comment}}}}
+		result := coll.FindOneAndUpdate(context.Background(), filter, update, options.FindOneAndUpdate().SetReturnDocument(options.After))
+		if result.Err() != nil {
+			return result.Err()
+		}
+		result.Decode(&review)
+		return c.Render("partials/review/user-comment", fiber.Map{
+			"Review": review,
+			"Author": user,
+		})
+
+	}
+}
+
+func EditReview(cfg config.Config) fiber.Handler {
+	return func(c *fiber.Ctx) error {
+		sess, err := cfg.Store.Get(c)
+		if err != nil {
+			return err
+		}
+		user := sess.Get("user").(*schema.User)
+		review_id, err := primitive.ObjectIDFromHex(c.Query("review_id"))
+		if err != nil {
+			return err
+		}
+		coll := cfg.Mc.Database("primary").Collection("reviews")
+		filter := bson.D{{"_id", review_id}, {"userid", user.ObjectId}}
+		var review schema.Review
+		err = coll.FindOne(context.Background(), filter).Decode(&review)
+		if err != nil {
+			return err
+		}
+		return c.Render("partials/review/edit", fiber.Map{
+			"User":   user,
+			"Review": review,
+		})
+	}
+}
+
+func HandleDeleteReview(cfg config.Config) fiber.Handler {
+	return func(c *fiber.Ctx) error {
+		sess, err := cfg.Store.Get(c)
+		if err != nil {
+			return err
+		}
+		user := sess.Get("user").(*schema.User)
+		review_id, err := primitive.ObjectIDFromHex(c.Query("review_id"))
+		if err != nil {
+			return err
+		}
+		coll := cfg.Mc.Database("primary").Collection("reviews")
+		filter := bson.D{{"_id", review_id}, {"userid", user.ObjectId}}
+		var review schema.Review
+		err = coll.FindOne(context.Background(), filter).Decode(&review)
+		if err != nil {
+			return err
+		}
+		_, err = coll.DeleteOne(context.Background(), filter)
+		if err != nil {
+			return err
+		}
+		coll_models := cfg.Mc.Database("primary").Collection("business-models")
+		filter = bson.D{{"_id", review.ModelId}}
+		update := bson.D{{"$inc", bson.D{{"reviewcount", -1}}}}
+		_, err = coll_models.UpdateOne(context.Background(), filter, update)
+		if err != nil {
+			return err
+		}
+		return c.SendStatus(200)
+	}
+}
+
 func HandleUnhelpfulReview(cfg config.Config) fiber.Handler {
 	return func(c *fiber.Ctx) error {
 		var review schema.Review
@@ -111,9 +223,6 @@ func NewReview(cfg config.Config) fiber.Handler {
 			return err
 		}
 		user := sess.Get("user").(*schema.User)
-		if !user.Membership {
-			return fiber.NewError(fiber.StatusForbidden, "You must be a member to review models.")
-		}
 		model_id, err := primitive.ObjectIDFromHex(c.Query("model_id"))
 		if err != nil {
 			return err
@@ -128,59 +237,6 @@ func NewReview(cfg config.Config) fiber.Handler {
 		return c.Render("partials/review/new", fiber.Map{
 			"Model": model,
 			"User":  user,
-		})
-	}
-}
-
-func HandleReviewsModal(cfg config.Config) fiber.Handler {
-	return func(c *fiber.Ctx) error {
-		sess, err := cfg.Store.Get(c)
-		if err != nil {
-			return err
-		}
-		user := sess.Get("user").(*schema.User)
-		if !user.Membership {
-			return fiber.NewError(fiber.StatusForbidden, "You must be a member to review models.")
-		}
-		coll := cfg.Mc.Database("primary").Collection("reviews")
-		model_id, err := primitive.ObjectIDFromHex(c.Query("model_id"))
-		if err != nil {
-			return err
-		}
-		filter := bson.D{{"modelid", model_id}}
-		opts := options.Find().SetSort(bson.D{{"createdat", -1}}).SetSkip(0)
-		cursor, err := coll.Find(context.Background(), filter, opts)
-		if err != nil {
-			return err
-		}
-		var reviews []schema.Review
-		if err = cursor.All(context.Background(), &reviews); err != nil {
-			return err
-		}
-		if len(reviews) == 0 {
-			coll = cfg.Mc.Database("primary").Collection("business-models")
-			filter = bson.D{{"_id", model_id}}
-			var model schema.Model
-			err = coll.FindOne(context.Background(), filter).Decode(&model)
-			if err != nil {
-				return err
-			}
-			return c.Render("modals/reviews", fiber.Map{
-				"Model": model,
-			})
-		}
-		authored_reviews := utils.GetAuthoredReviews(cfg, reviews, *user)
-		coll = cfg.Mc.Database("primary").Collection("business-models")
-		filter = bson.D{{"_id", model_id}}
-		var model schema.Model
-		err = coll.FindOne(context.Background(), filter).Decode(&model)
-		if err != nil {
-			return err
-		}
-		return c.Render("modals/reviews", fiber.Map{
-			"User":    user,
-			"Model":   model,
-			"Reviews": authored_reviews,
 		})
 	}
 }
@@ -266,7 +322,7 @@ func HandleNewReview(cfg config.Config) fiber.Handler {
 		if err != nil {
 			return err
 		}
-		return c.Render("partials/review/comment", fiber.Map{
+		return c.Render("partials/review/user-comment", fiber.Map{
 			"Author": user,
 			"Review": review,
 		})

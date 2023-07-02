@@ -28,6 +28,7 @@ func main() {
 }
 
 func setup() (config.Config, *fiber.App) {
+	// if env==dev load .env file
 	redis_client := redis.NewClient(&redis.Options{
 		Addr:     "redis:6379",
 		Password: "",

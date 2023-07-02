@@ -17,10 +17,8 @@
         <div class="helpful-count">
           <p class="detail color-neutral-400">{{.Review.HelpfulCount}} people found this helpful 😘</p>
         </div>
-        <div class="review-user-buttons">
-          <button class="secondary" hx-delete="/review">🗑 Remove review</button>
-          <button class="secondary" hx-get="/review/edit" hx-target=".reviews" hx-swap="beforebegin">✍️ Edit
-            review</button>
+        <div class="review-action-buttons">
+          <button class="primary" hx-get="/modals/welcome" hx-target="body" hx-swap="beforeend">👍 Helpful</button>
         </div>
       </div>
     </div>

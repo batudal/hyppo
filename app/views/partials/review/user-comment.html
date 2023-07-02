@@ -1,0 +1,31 @@
+<div class="review-container">
+  {{if .Author.Avatar}}
+  <img src="{{.Author.Avatar}}" alt="avatar" class="avatar">
+  {{else}}
+  <div class="pseudo-avatar">
+    <img src="../../assets/user.svg" alt="user avatar" />
+  </div>
+  {{end}}
+  <div class="review-comment-container">
+    <div class="review-comment-header">
+      <div class="subtle-medium color-primary">{{.Author.Name}}</div>
+      <p class="detail color-neutral-500">{{.Review.ParseDate}}</p>
+    </div>
+    <div class="review-comment">
+      <pre class="color-neutral-50">{{.Review.Comment}}</pre>
+      <div class="review-action-bar">
+        <div class="helpful-count">
+          <p class="detail color-neutral-400">{{.Review.HelpfulCount}} people found this helpful 😘</p>
+        </div>
+        <div class="review-user-buttons">
+          <button class="secondary" hx-delete="/review?review_id={{.Review.ObjectId.Hex}}" hx-swap="delete"
+            hx-target="closest .review-container">🗑 Remove
+            review</button>
+          <button class="secondary" hx-get="/partials/review/edit?review_id={{.Review.ObjectId.Hex}}"
+            hx-target="closest .review-container" hx-swap="outerHTML">✍️ Edit
+            review</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

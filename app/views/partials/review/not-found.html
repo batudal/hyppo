@@ -1,4 +1,16 @@
 <div class="not-found">
-  <h3>😱 No results for "{{.Query}}"</h3>
-  <p class="color-neutral-300">Sorry, we couldn't find what you were looking for.</p>
+  <h3>😱 No reviews for "{{.Model.Name}}" yet</h3>
+  <p class="color-neutral-300">Do you have any experience with "{{.Model.Name}}" model? How do you think it should
+    be
+    executed? Let us know.</p>
+  <form class="comment-form" method="post">
+    <input type="text" name="model_id" value="{{.Model.ObjectId.Hex}}" hidden style="display:none">
+    <textarea name="comment" class="body" placeholder="Write your review..." rows="6"></textarea>
+    <div class="review-action-buttons">
+      <button class="secondary" _="on click remove closest .review-container">🙈 Discard review</button>
+      <button class="primary" hx-post="/review" hx-target="closest .reviews" hx-swap="innerHTML">📬
+        Post
+        review</button>
+    </div>
+  </form>
 </div>

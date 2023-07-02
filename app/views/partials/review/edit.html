@@ -1,0 +1,25 @@
+<div class="review-container">
+  {{if .User.Avatar}}
+  <img src="{{.User.Avatar}}" alt="avatar" class="avatar">
+  {{else}}
+  <div class="pseudo-avatar">
+    <img src="../../assets/user.svg" alt="user avatar" />
+  </div>
+  {{end}}
+  <div class="review-comment-container">
+    <div class="review-comment-header">
+      <div class="subtle-medium color-primary">{{.User.Name}}</div>
+      <p class="detail color-neutral-500">{{.Review.ParseDate}}</p>
+    </div>
+    <form class="review-comment" hx-patch="/review?review_id={{.Review.ObjectId.Hex}}"
+      hx-target="closest .review-container" hx-swap="outerHTML">
+      <textarea name="comment" class="comment-input" required rows="6">{{.Review.Comment}}</textarea>
+      <div class="review-action-buttons">
+        <button class="secondary" hx-get="/review/discard?review_id={{.Review.ObjectId.Hex}}"
+          hx-target="closest .review-container" hx-swap="outerHTML">🙈 Discard</button>
+        <button class="primary" type="submit">📬 Post
+          review</button>
+      </div>
+    </form>
+  </div>
+</div>

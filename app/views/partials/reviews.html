@@ -1,28 +1,16 @@
 <div class="reviews">
-  {{if .Reviews}}
-  {{range .Reviews}}
-  {{if and ($.User) (eq .Review.UserId $.User.ObjectId)}}
-  {{template "partials/review/user_comment" .}}
-  {{else}}
-  {{template "partials/review/comment" .}}
-  {{end}}
-  {{end}}
-  {{else}}
-  <div class="not-found">
-    <h3>😱 No reviews for "{{.Model.Name}}" yet</h3>
-    <p class="color-neutral-300">Do you have any experience with "{{.Model.Name}}" model? How do you think it should
-      be
-      executed? Let us know.</p>
-    <form class="comment-form" method="post">
-      <input type="text" name="model_id" value="{{.Model.ObjectId.Hex}}" hidden style="display:none">
-      <textarea name="comment" class="body" placeholder="Write your review..." rows="6"></textarea>
-      <div class="review-action-buttons">
-        <button class="secondary" _="on click remove closest .review-container">🙈 Discard review</button>
-        <button class="primary" hx-post="/review" hx-target="closest .reviews" hx-swap="innerHTML">📬
-          Post
-          review</button>
-      </div>
-    </form>
+  {{template "partials/review/new" .}}
+  <div class="reviews-array" style="width:100%">
+    {{if .Reviews}}
+    {{range .Reviews}}
+    {{if and ($.User) (eq .Review.UserId $.User.ObjectId)}}
+    {{template "partials/review/user-comment" .}}
+    {{else if $.User}}
+    {{template "partials/review/comment" .}}
+    {{else}}
+    {{template "partials/review/guest-comment" .}}
+    {{end}}
+    {{end}}
+    {{end}}
   </div>
-  {{end}}
 </div>

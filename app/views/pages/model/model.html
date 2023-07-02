@@ -4,15 +4,13 @@
       Model</div>
     <div hx-get="/model_tabs/tests?model_id={{.Model.ObjectId.Hex}}" class="tab-item">🧪 Validation
       Tests</div>
-    <div hx-get="/model_tabs/reviews?model_id={{.Model.ObjectId.Hex}}" class="tab-item">🎙 Reviews</div>
+    <div hx-get="/model_tabs/reviews?model_id={{.Model.ObjectId.Hex}}" class="tab-item">🎙
+      Reviews({{.Model.ReviewCount}})
+    </div>
   </div>
-  <article class="model">
+  <article class="model raw">
     <div class="model-bar">
       <h2 class="color-neutral-200" style="flex:1">{{.Model.Name}}</h2>
-      <div class="ratings-container">
-        <p class="medium color-neutral-400">🧪 {{.Model.TestCount}} tests</p>
-        <p class="medium color-neutral-400">🎙 {{.Model.ReviewCount}} reviews</p>
-      </div>
     </div>
     <div class="divider"></div>
     <div class="model-companies">
