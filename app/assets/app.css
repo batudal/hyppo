@@ -2,18 +2,32 @@
   --color-primary: #E11D48;
   --color-primary-dark: #BE123C;
   --color-primary-darker: #9F1239;
-  --color-neutral-50: #FAFAFA;
-  --color-neutral-100: #F4F4F5;
-  --color-neutral-200: #E4E4E7;
-  --color-neutral-300: #D4D4D8;
-  --color-neutral-400: #A1A1AA;
-  --color-neutral-500: #71717A;
-  --color-neutral-600: #52525B;
-  --color-neutral-700: #3F3F46;
-  --color-neutral-800: #27272A;
-  --color-neutral-900: #18181B;
-  --color-neutral-1000: #111113;
+  /* --color-neutral-50: #FAFAFA; */
+  /* --color-neutral-100: #F4F4F5; */
+  /* --color-neutral-200: #E4E4E7; */
+  /* --color-neutral-300: #D4D4D8; */
+  /* --color-neutral-400: #A1A1AA; */
+  /* --color-neutral-500: #71717A; */
+  /* --color-neutral-600: #52525B; */
+  /* --color-neutral-700: #3F3F46; */
+  /* --color-neutral-800: #27272A; */
+  /* --color-neutral-825: #191920; */
+  /* --color-neutral-900: #18181B; */
+  /* --color-neutral-1000: #111113; */
+  --color-neutral-50:#F5F5F6;
+  --color-neutral-100:#E9EAF1;
+  --color-neutral-200:#CBCEDE;
+  --color-neutral-300:#959CC6;
+  --color-neutral-400:#4D5A9C;
+  --color-neutral-500:#2D3770;
+  --color-neutral-600:#1D244E;
+  --color-neutral-700:#121A40;
+  --color-neutral-800:#10142B;
+  --color-neutral-825:#0B0E1E;
+  --color-neutral-900:#090C19;
+  --color-neutral-1000:#000312;
   --color-green: #22C55E;
+  --color-red: #EF4444;
 }
 .color-primary{
   color: var(--color-primary);
@@ -56,6 +70,12 @@
 }
 .color-neutral-1000{
   color: var(--color-neutral-1000);
+}
+.color-red{
+  color: var(--color-red);
+}
+.color-green{
+  color: var(--color-green);
 }
 .bg-primary{
   background-color: var(--color-primary);
@@ -111,6 +131,7 @@ body {
   display:flex;
   flex-direction: column;
   align-items: center;
+  color: var(--color-neutral-50);
 }
 body.light-theme {
   background-color: var(--color-neutral-50);
@@ -122,9 +143,9 @@ ol[class] {
   list-style: none;
 }
 
-/* A elements that don't have a class get default styles */
-a:not([class]) {
-  text-decoration-skip-ink: auto;
+a,a:visited, a:hover, a:active{
+  text-decoration: none;
+  color: inherit;
 }
 
 /* Make images easier to work with */
@@ -194,11 +215,11 @@ main{
   text-align: center;
   padding: 24px;
   height: 480px;
-  background-image: url("https://hyppo-files.fra1.cdn.digitaloceanspaces.com/hero_background.webp");
-  background-size:contain;
+  background-image: url("https://hyppo-files.fra1.cdn.digitaloceanspaces.com/hero_background_illustration.webp");
+  background-size:cover;
   background-repeat: no-repeat;
-  background-position: bottom;
-  width: 1000px;
+  background-position: center;
+  width:100%;
   max-width:100%;
   z-index:9;
 }
@@ -211,8 +232,17 @@ main{
   }
 }
 .hero-container{
-  max-width: 440px;
+  max-width: 800px;
+  width:100%;
   filter: drop-shadow(0px 0px 100px rgba(225, 29, 72, 0.6));
+  display:flex;
+  flex-direction: column;
+  align-items: flex-start;
+  padding: 40px;
+}
+.hero-container h1{
+    text-align: left;
+
 }
 
 button {
@@ -608,8 +638,6 @@ small{
 .menu-item {
   padding: 6px 8px;
   border-radius: 6px;
-}
-.menu-item.a{
   color: var(--color-neutral-300);
 }
 .menu-item:hover {
@@ -647,6 +675,11 @@ small{
   max-width: 100%;
   width: 800px;
   box-sizing: border-box;
+}
+.model-card:hover{
+  background-color: var(--color-neutral-1000);
+  border: 1px solid var(--color-primary);
+  cursor: pointer;
 }
 .light-theme .model{
   background-color: var(--color-neutral-100);
@@ -1267,4 +1300,19 @@ pre{
 .raw{
   border:none;
   background-color: unset;
+}
+
+.validated{
+  border: 1px solid var(--color-green);
+}
+
+.comment-container{
+  width:100%;
+}
+
+.card-link{
+  text-decoration: none;
+}
+.card-link:hover{
+  background-color: var(--color-neutral-800);
 }

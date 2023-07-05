@@ -9,26 +9,38 @@ import (
 	"github.com/batudal/hyppo/config"
 	"github.com/batudal/hyppo/schema"
 	"github.com/gofiber/fiber/v2"
+	"github.com/gofiber/fiber/v2/middleware/cors"
 	"github.com/gofiber/fiber/v2/middleware/logger"
 	"github.com/gofiber/fiber/v2/middleware/session"
 	"github.com/gofiber/storage/mongodb"
 	"github.com/gofiber/template/html/v2"
+	"github.com/joho/godotenv"
+	"github.com/redis/go-redis/v9"
 	"github.com/stripe/stripe-go/v74"
 	"github.com/trycourier/courier-go/v2"
-
-	"github.com/redis/go-redis/v9"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
+const env = "dev"
+
 func main() {
 	cfg, app := setup()
 	app.Use(logger.New())
+	app.Use(cors.New(cors.Config{
+		AllowHeaders:  "HX-Request, HX-Trigger, HX-Trigger-Name, HX-Target, HX-Prompt",
+		ExposeHeaders: "HX-Push, HX-Redirect, HX-Location, HX-Refresh, HX-Trigger, HX-Trigger-After-Swap, HX-Trigger-After-Settle",
+	}))
 	Routes(app, cfg)
 }
 
 func setup() (config.Config, *fiber.App) {
-	// if env==dev load .env file
+	if env == "dev" {
+		err := godotenv.Load("../.env")
+		if err != nil {
+			panic(err)
+		}
+	}
 	redis_client := redis.NewClient(&redis.Options{
 		Addr:     "redis:6379",
 		Password: "",
@@ -63,6 +75,7 @@ func setup() (config.Config, *fiber.App) {
 	app := fiber.New(fiber.Config{
 		Views: engine,
 	})
+
 	cfg := config.Config{
 		Mc:      mongodb_client,
 		Store:   store,

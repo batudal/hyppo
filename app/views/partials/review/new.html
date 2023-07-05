@@ -1,4 +1,4 @@
-<div class="review-container">
+<div class="review-container" id="review-container">
   {{if .User.Avatar}}
   <img src="{{.User.Avatar}}" alt="avatar" class="avatar">
   {{else}}
@@ -13,7 +13,12 @@
     <div class="review-comment">
       <form class="comment-form" method="post">
         <input type="text" name="model_id" value="{{.Model.ObjectId.Hex}}" hidden style="display:none">
-        <textarea name="comment" class="comment-input" placeholder="Write a review..." required rows="6"></textarea>
+        <textarea name="comment" class="comment-input" placeholder="Write a review..." required rows="6" minlength="20"
+          autofocus maxlength="2000" hx-get="/validate/comment" hx-target="#comment-error" hx-swap="innerHTML"
+          hx-trigger="keyup delay:500ms changed"></textarea>
+        <div id="comment-error">
+          {{with .Error}}<p class="detail color-red">{{.}}</p>{{end}}
+        </div>
         <div class="review-action-buttons">
           <button class="secondary" hx-get="/review/new?model_id={{.Model.ObjectId.Hex}}"
             hx-target="closest .review-container" hx-swap="outerHTML">🙈 Discard review</button>

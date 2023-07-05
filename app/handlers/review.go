@@ -7,12 +7,30 @@ import (
 	"github.com/batudal/hyppo/config"
 	"github.com/batudal/hyppo/schema"
 	"github.com/batudal/hyppo/utils"
+	"github.com/go-playground/validator/v10"
 	"github.com/gofiber/fiber/v2"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
+
+func ValidateComment(cfg config.Config) fiber.Handler {
+	return func(c *fiber.Ctx) error {
+		comment := c.FormValue("comment")
+		var validate = validator.New()
+		err := validate.Var(comment, "required,min=20,max=2000")
+		if err != nil {
+			return c.Render("partials/review/invalid-comment", fiber.Map{
+				"Comment": comment,
+				"Errors":  err,
+			})
+		}
+		return c.Render("partials/review/validated-comment", fiber.Map{
+			"Comment": comment,
+		})
+	}
+}
 
 func HandleDiscardReview(cfg config.Config) fiber.Handler {
 	return func(c *fiber.Ctx) error {
@@ -64,7 +82,6 @@ func HandleEditReview(cfg config.Config) fiber.Handler {
 			"Review": review,
 			"Author": user,
 		})
-
 	}
 }
 
@@ -283,12 +300,14 @@ func HandleSearchReviews(cfg config.Config) fiber.Handler {
 
 func HandleNewReview(cfg config.Config) fiber.Handler {
 	return func(c *fiber.Ctx) error {
-		if c.FormValue("comment") == "" {
-			return c.Render("partials/comment", fiber.Map{
-				"Error": "Comment cannot be empty",
-			})
-		}
 		model_id, err := primitive.ObjectIDFromHex(c.FormValue("model_id"))
+		if err != nil {
+			return err
+		}
+		var model schema.Model
+		models_coll := cfg.Mc.Database("primary").Collection("business-models")
+		filter := bson.D{{"_id", model_id}}
+		err = models_coll.FindOne(context.Background(), filter).Decode(&model)
 		if err != nil {
 			return err
 		}
@@ -297,6 +316,44 @@ func HandleNewReview(cfg config.Config) fiber.Handler {
 			panic(err)
 		}
 		user := sess.Get("user").(*schema.User)
+		if !user.Membership {
+			c.Append("HX-Retarget", "body")
+			c.Append("HX-Reswap", "beforeend")
+			memberships_coll := cfg.Mc.Database("primary").Collection("memberships")
+			var memberships []schema.Membership
+			cursor, err := memberships_coll.Find(context.TODO(), bson.D{{}})
+			if err != nil {
+				return err
+			}
+			if err = cursor.All(context.Background(), &memberships); err != nil {
+				return err
+			}
+			return c.Render("modals/membership", fiber.Map{
+				"Memberships": memberships,
+			})
+		}
+		reviews_coll := cfg.Mc.Database("primary").Collection("reviews")
+		result := reviews_coll.FindOne(context.Background(), bson.D{{"modelid", model_id}, {"userid", user.ObjectId}})
+		if result.Err() != mongo.ErrNoDocuments {
+			c.Append("HX-Retarget", ".review-container")
+			c.Append("HX-Reswap", "outerHTML")
+			return c.Render("partials/review/new", fiber.Map{
+				"Model": model,
+				"User":  user,
+				"Error": "😓 You have already reviewed this model.",
+			})
+		}
+		var validate = validator.New()
+		err = validate.Var(c.FormValue("comment"), "required,min=20,max=2000")
+		if err != nil {
+			c.Append("HX-Retarget", ".review-container")
+			c.Append("HX-Reswap", "outerHTML")
+			return c.Render("partials/review/new", fiber.Map{
+				"Model": model,
+				"User":  user,
+				"Error": "😅 Comment must be between 20 and 2000 characters",
+			})
+		}
 		review := schema.Review{
 			ObjectId:  primitive.NewObjectID(),
 			ModelId:   model_id,
@@ -305,13 +362,10 @@ func HandleNewReview(cfg config.Config) fiber.Handler {
 			CreatedAt: time.Now().Unix(),
 			UpdatedAt: time.Now().Unix(),
 		}
-		reviews_coll := cfg.Mc.Database("primary").Collection("reviews")
 		_, err = reviews_coll.InsertOne(context.Background(), review)
 		if err != nil {
 			return err
 		}
-		models_coll := cfg.Mc.Database("primary").Collection("business-models")
-		filter := bson.D{{"_id", model_id}}
 		update := bson.D{{"$set", bson.D{{"latestreview", review.Comment}}}}
 		_, err = models_coll.UpdateOne(context.Background(), filter, update)
 		if err != nil {

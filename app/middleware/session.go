@@ -12,6 +12,8 @@ func Authorize(cfg config.Config) fiber.Handler {
 			return err
 		}
 		if sess.Get("user") == nil {
+			c.Append("HX-Retarget", "body")
+			c.Append("HX-Reswap", "beforeend")
 			return c.Render("modals/welcome", fiber.Map{})
 		}
 		return c.Next()

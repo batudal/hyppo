@@ -49,6 +49,7 @@ func HandleLogout(cfg config.Config) fiber.Handler {
 			return err
 		}
 		sess.Destroy()
+		c.Append("HX-Refresh", "true")
 		return c.Render("partials/navigation/login-button", fiber.Map{})
 	}
 }
@@ -111,6 +112,7 @@ func HandleGoogleLogin(cfg config.Config) fiber.Handler {
 		if err := sess.Save(); err != nil {
 			return err
 		}
-		return c.Redirect("/")
+		referer := c.GetReqHeaders()["Referer"]
+		return c.Redirect(referer)
 	}
 }
