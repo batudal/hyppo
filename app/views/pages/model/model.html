@@ -9,17 +9,20 @@
     </div>
   </div>
   <article class="model raw">
+    <p class="subheader color-neutral-300">model</p>
     <div class="model-bar">
-      <h2 class="color-neutral-200" style="flex:1">{{.Model.Name}}</h2>
+      <h2>{{.Model.Name}}</h2>
     </div>
     <div class="divider"></div>
+    <p class="subheader color-neutral-300">companies</p>
     <div class="model-companies">
       {{range .Model.Companies}}
       <small class="tag">{{.}}</small>
       {{end}}
     </div>
+    <div class="divider"></div>
+    <p class="subheader color-neutral-300">key points</p>
     <div class="model-contents" id="{{.Model.Flatname}}">
-      <div class="divider"></div>
       <div class="model-description">
         {{.Model.Content}}
       </div>

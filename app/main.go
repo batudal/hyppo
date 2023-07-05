@@ -22,7 +22,7 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
-const env = "prod"
+const env = "dev"
 
 func main() {
 	cfg, app := setup()
