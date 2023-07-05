@@ -21,10 +21,10 @@
   --color-neutral-400:#4D5A9C;
   --color-neutral-500:#2D3770;
   --color-neutral-600:#1D244E;
-  --color-neutral-700:#121A40;
-  --color-neutral-800:#10142B;
-  --color-neutral-825:#0B0E1E;
-  --color-neutral-900:#090C19;
+  --color-neutral-700:#1E2342;
+  --color-neutral-800:#171C3A;
+  --color-neutral-825:#171C3A;
+  --color-neutral-900:#101429;
   --color-neutral-1000:#000312;
   --color-green: #22C55E;
   --color-red: #EF4444;
@@ -202,9 +202,10 @@ main{
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
+  justify-content: flex-start;
   margin-bottom: 120px;
   width: 100%;
+  height:100vh;
 }
 
 .hero{
@@ -214,7 +215,7 @@ main{
   justify-content: space-between;
   text-align: center;
   padding: 24px;
-  height: 480px;
+  height: 520px;
   background-image: url("https://hyppo-files.fra1.cdn.digitaloceanspaces.com/hero_background_illustration.webp");
   background-size:cover;
   background-repeat: no-repeat;
@@ -234,11 +235,12 @@ main{
 .hero-container{
   max-width: 800px;
   width:100%;
-  filter: drop-shadow(0px 0px 100px rgba(225, 29, 72, 0.6));
+  filter: drop-shadow(0px 0px 60px rgba(246, 204, 212, 0.8));
   display:flex;
+  gap: 24px;
   flex-direction: column;
   align-items: flex-start;
-  padding: 40px;
+  padding: 20px;
 }
 .hero-container h1{
     text-align: left;
@@ -337,7 +339,7 @@ input:focus::placeholder {
 }
 
 span{
-  color: var(--color-primary);
+  color: var(--color-neutral-300);
 }
 
 .subtle-medium {
@@ -361,9 +363,10 @@ span{
   padding: 12px 16px;
   gap: 16px;
   border: 1px solid var(--color-neutral-700);
-  background-color: var(--color-neutral-900);
-  max-width: 800px;
+  max-width: 920px;
   width:100%;
+  background: rgba(0, 3, 18, 0.50);
+  backdrop-filter: blur(2px);
 }
 .light-theme .banner{
   background-color: var(--color-neutral-50);
@@ -382,7 +385,7 @@ p {
   font-family: inherit;
   font-style: normal;
   font-weight: 400;
-  font-size: 14px;
+  font-size: 16px;
   line-height: 24px;
   color: var(--color-neutral-50);
   display: inline-block;
@@ -394,7 +397,7 @@ h1{
   font-style: normal;
   font-weight: 800;
   font-size: 48px;
-  line-height: 52px;
+  line-height: 56px;
   text-align: center;
   letter-spacing: -0.012em;
   color: var(--color-neutral-50);
@@ -406,7 +409,7 @@ h2 {
   font-family: inherit;
   font-style: normal;
   font-weight: 600;
-  font-size: 18px;
+  font-size: 24px;
   line-height: 28px;
   color: var(--color-neutral-50);
   white-space: nowrap;
@@ -638,7 +641,6 @@ small{
 .menu-item {
   padding: 6px 8px;
   border-radius: 6px;
-  color: var(--color-neutral-300);
 }
 .menu-item:hover {
   background-color: var(--color-neutral-800);
@@ -1257,7 +1259,7 @@ textarea:focus{
   background: var(--color-neutral-700);
 }
 .selected{
-  background: var(--color-neutral-800);
+  background: var(--color-neutral-700);
 }
 
 .model-card-buttons{
@@ -1300,6 +1302,7 @@ pre{
 .raw{
   border:none;
   background-color: unset;
+  padding: 0px;
 }
 
 .validated{
