@@ -2,28 +2,16 @@
   --color-primary: #E11D48;
   --color-primary-dark: #BE123C;
   --color-primary-darker: #9F1239;
-  /* --color-neutral-50: #FAFAFA; */
-  /* --color-neutral-100: #F4F4F5; */
-  /* --color-neutral-200: #E4E4E7; */
-  /* --color-neutral-300: #D4D4D8; */
-  /* --color-neutral-400: #A1A1AA; */
-  /* --color-neutral-500: #71717A; */
-  /* --color-neutral-600: #52525B; */
-  /* --color-neutral-700: #3F3F46; */
-  /* --color-neutral-800: #27272A; */
-  /* --color-neutral-825: #191920; */
-  /* --color-neutral-900: #18181B; */
-  /* --color-neutral-1000: #111113; */
   --color-neutral-50:#F5F5F6;
   --color-neutral-100:#E9EAF1;
   --color-neutral-200:#C9CDE2;
   --color-neutral-300:#959CC6;
-  --color-neutral-400:#4D5A9C;
+  --color-neutral-400:#4D5688;
   --color-neutral-500:#2D3770;
   --color-neutral-600:#1D244E;
-  --color-neutral-700:#1E2342;
-  --color-neutral-800:#171C3A;
-  --color-neutral-900:#101429;
+  --color-neutral-700:#323755;
+  --color-neutral-800:#1E233F;
+  --color-neutral-900:#101323;
   --color-neutral-1000:#000312;
   --color-green: #22C55E;
   --color-red: #EF4444;
