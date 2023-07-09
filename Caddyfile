@@ -15,6 +15,5 @@
 
 hyppo.io {
 	encode zstd gzip
-	import static
 	reverse_proxy http://hyppo:80
 }
