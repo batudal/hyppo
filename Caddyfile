@@ -5,7 +5,7 @@
 (static) {
 	@static {
 		file
-		path *.ico *.css *.js *.gif *.jpg *.jpeg *.png *.svg *.woff *.json
+		path *.ico *.css *.js *.gif *.jpg *.jpeg *.png *.svg *.woff *.json *.txt *.xml
 	}
 	header @static Cache-Control max-age=5184000
 }
