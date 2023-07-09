@@ -2,6 +2,14 @@
 	email takez0_o@pm.me
 }
 
+(static) {
+	@static {
+		file
+		path *.ico *.css *.js *.gif *.jpg *.jpeg *.png *.svg *.woff *.json *.txt *.xml
+	}
+	header @static Cache-Control max-age=5184000
+}
+
 (security) {
 	header {
 		# enable HSTS
@@ -15,5 +23,6 @@
 
 hyppo.io {
 	encode zstd gzip
+	import static
 	reverse_proxy http://hyppo:80
 }
