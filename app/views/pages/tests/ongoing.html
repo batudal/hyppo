@@ -1,0 +1,32 @@
+{{$human_dates := .HumanDates}}
+<div class="tests-page">
+  <div class="tabs-bar">
+    <div class="tab-list-wrapper">
+      <div class="tab-list">
+        <div hx-get="/tests_tabs/ongoing" class="tab-item selected">🐛 Ongoing tests</div>
+        <div hx-get="/tests_tabs/completed" class="tab-item">🦋
+          Completed tests</div>
+      </div>
+    </div>
+    <button class="primary" hx-post="/test" hx-target="closest .tests-page" hx-swap="outerHTML">👩‍🔬 New test</button>
+  </div>
+  {{if .Tests}}
+  {{range $index, $test := .Tests}}
+  <a class="model raw" href="/tests/{{$test.ObjectId.Hex}}">
+    <div class="test-bar">
+      <div class="test-title">
+        <h2 class="color-neutral-200">{{$test.Title}}</h2>
+        <p class="detail color-neutral-300" id="start" class="start">{{(index $human_dates $index).StartDate}}</p>
+        <p>👉</p>
+        <p class="detail color-neutral-300" id="end" class="end">{{(index $human_dates $index).EndDate}}</p>
+      </div>
+      {{if eq $test.Status "private"}}
+      <label class="test-passive-toggle detail">Private</label>
+      {{else}}
+      <label class="test-passive-toggle detail">Public</label>
+      {{end}}
+    </div>
+  </a>
+  {{end}}
+  {{end}}
+</div>

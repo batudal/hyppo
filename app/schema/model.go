@@ -11,19 +11,17 @@ import (
 )
 
 type Model struct {
-	ObjectId     primitive.ObjectID `bson:"_id"`
-	CategoryId   primitive.ObjectID `bson:"categoryid"`
-	Name         string             `bson:"name"`
-	Flatname     string             `bson:"flatname"`
-	Description  string             `bson:"description"`
-	LatestReview string             `bson:"latestreview"`
-	ReviewCount  int64              `bson:"reviewcount"`
-	LatestTest   string             `bson:"latesttest"`
-	TestCount    int64              `bson:"testcount"`
-	Companies    []string           `bson:"companies"`
-	CreatedAt    int64              `bson:"createdat"`
-	UpdatedAt    int64              `bson:"updatedat"`
-	Content      template.HTML      `bson:"content"`
+	ObjectId    primitive.ObjectID `bson:"_id"`
+	CategoryId  primitive.ObjectID `bson:"categoryid"`
+	Name        string             `bson:"name"`
+	Flatname    string             `bson:"flatname"`
+	Description string             `bson:"description"`
+	ReviewCount int64              `bson:"reviewcount"`
+	TestCount   int64              `bson:"testcount"`
+	Companies   []string           `bson:"companies"`
+	CreatedAt   int64              `bson:"createdat"`
+	UpdatedAt   int64              `bson:"updatedat"`
+	Content     template.HTML      `bson:"content"`
 }
 
 type Feed struct {

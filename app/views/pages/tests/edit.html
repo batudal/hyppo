@@ -1,0 +1,126 @@
+{{$user := .User}}
+{{$models := .Models}}
+{{$methods := .Methods}}
+{{$test := .Test}}
+
+{{with .Test}}
+<div class="tests-page">
+  <form id="test-form" class="model raw" hx-patch="/test?test_id={{.ObjectId.Hex}}" hx-target="closest .tests-page"
+    hx-swap="outerHTML">
+    <input type="hidden" name="start" id="start" value="{{.StartDate}}">
+    <input type="hidden" name="end" id="end" value="{{.EndDate}}">
+    <div class="form-group">
+      <p class="subheader color-neutral-300">title</p>
+      <div class="test-title">
+        <input type="text" id="title" name="title" class="color-neutral-200" value="{{.Title}}" />
+      </div>
+    </div>
+    <div class="form-group">
+      <p class="subheader color-neutral-300">project</p>
+      <div class="test-title">
+        <input type="text" id="project" name="project" class="color-neutral-200" value="{{.Project}}" />
+      </div>
+    </div>
+    <div class="form-group">
+      <p class="subheader color-neutral-300">dates</p>
+      <div class="test-dates">
+        <p>🎬</p>
+        <input type="text" id="startdate" name="startdate" class="date-input" value="{{.StartDate}}">
+        <p>👉</p>
+        <input type="text" id="enddate" name="enddate" class="date-input" value="{{.EndDate}}">
+        <p>🏁</p>
+      </div>
+    </div>
+    <div class="form-group">
+      <p class="subheader color-neutral-300">visibility</p>
+      <select name="status" id="status" class="select-box">
+        <option value="private" {{if eq .Status "private" }}selected{{end}} {{if eq $user.Membership
+          false}}disabled{{end}}>
+          🕵️‍♀️ Private
+        </option>
+        <option value="public" {{if eq .Status "public" }}selected{{end}}>👀 Public</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <p class="subheader color-neutral-300">business model</p>
+      <select name="model" id="model" class="select-box">
+        {{range $models}}
+        <option name="model-{{.ObjectId.Hex}}" value="{{.Name}}" {{if eq .ObjectId $test.ModelId}}selected{{end}}>
+          {{.Name}}</option>
+        <label for="model-{{.ObjectId.Hex}}">{{.Name}}</label>
+        {{end}}
+      </select>
+    </div>
+    <div class="form-group">
+      <p class="subheader color-neutral-300">validation method</p>
+      <select name="method" id="method" class="select-box">
+        {{range $methods}}
+        <option value="{{.Name}}" {{if eq .ObjectId $test.MethodId}}selected{{end}}>{{.Name}}</option>
+        {{end}}
+      </select>
+    </div>
+    <div class="form-group">
+      <p class="subheader color-neutral-300">target audience</p>
+      <textarea name="targetaudience" rows="6"
+        placeholder="Tell about your target audience...">{{.TargetAudience}}</textarea>
+    </div>
+    <div class="form-group">
+      <p class="subheader color-neutral-300">problem statement</p>
+      <textarea name="problemstatement" rows="6"
+        placeholder="Tell about your problem statement...">{{.ProblemStatement}}</textarea>
+    </div>
+    <div class="form-group">
+      <p class="subheader color-neutral-300">proposed solution</p>
+      <textarea name="proposedsolution" rows="6"
+        placeholder="Tell about your proposed solution...">{{.ProposedSolution}}</textarea>
+    </div>
+    <div class="form-group">
+      <p class="subheader color-neutral-300">kpi</p>
+      <textarea name="kpi" rows="6" placeholder="Tell about your kpi...">{{.KPI}}</textarea>
+    </div>
+    <div class="form-group">
+      <p class="subheader color-neutral-300">success criteria</p>
+      <input type="number" name="successcriteria" id="successcriteria" placeholder="0" value="{{.SuccessCriteria}}">
+    </div>
+    <div class="test-buttons">
+      <button class="secondary small" type="button" hx-delete="/test?test_id={{.ObjectId.Hex}}" hx-swap="innerHTML"
+        hx-target="body">🥵 Remove test</button>
+      <div class="test-buttons-right">
+        <a href="/tests"><button class="secondary small" type="button">🙈 Discard changes</button></a>
+        <button class="primary small" id="submit-button" type="submit">💾 Save</button>
+      </div>
+    </div>
+  </form>
+</div>
+{{end}}
+
+<script defer>
+  var random_id = Math.random().toString(36).substr(2, 9)
+  var startdate = parseInt(document.getElementById('startdate').value)
+  var enddate = parseInt(document.getElementById('enddate').value)
+  var form_obj = document.getElementById('test-form')
+  var start = datepicker('#startdate', {
+    id: random_id,
+    formatter: (input, date, instance) => {
+      document.getElementById('start').value = date.getTime()
+      input.value = date.toLocaleDateString('en-GB', {
+        day: 'numeric',
+        month: 'short',
+        year: 'numeric'
+      })
+    },
+    dateSelected: new Date(startdate)
+  })
+  var end = datepicker('#enddate', {
+    id: random_id,
+    formatter: (input, date, instance) => {
+      document.getElementById('end').value = date.getTime()
+      input.value = date.toLocaleDateString('en-GB', {
+        day: 'numeric',
+        month: 'short',
+        year: 'numeric'
+      })
+    },
+    dateSelected: new Date(enddate)
+  })
+</script>

@@ -366,11 +366,6 @@ func HandleNewReview(cfg config.Config) fiber.Handler {
 		if err != nil {
 			return err
 		}
-		update := bson.D{{"$set", bson.D{{"latestreview", review.Comment}}}}
-		_, err = models_coll.UpdateOne(context.Background(), filter, update)
-		if err != nil {
-			return err
-		}
 		update_review_count := bson.D{{"$inc", bson.D{{"reviewcount", 1}}}}
 		_, err = models_coll.UpdateOne(context.Background(), filter, update_review_count)
 		if err != nil {

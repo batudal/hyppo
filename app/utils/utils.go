@@ -13,8 +13,94 @@ import (
 	"github.com/redis/go-redis/v9"
 	"github.com/trycourier/courier-go/v2"
 	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
 )
+
+type HumanDate struct {
+	StartDate string
+	EndDate   string
+}
+
+func HumanizeDates(tests *[]schema.Test) ([]HumanDate, error) {
+	var human_dates []HumanDate
+	for _, test := range *tests {
+		startdate := test.StartDate
+		startdate_human := startdate.Time().Format("January 2, 2006")
+		enddate := test.EndDate
+		enddate_human := enddate.Time().Format("January 2, 2006")
+		human_dates = append(human_dates, HumanDate{startdate_human, enddate_human})
+	}
+	return human_dates, nil
+}
+
+func UpdateTestCounts(
+	cfg config.Config,
+	old primitive.ObjectID,
+	new primitive.ObjectID) error {
+	if old == new {
+		return nil
+	}
+	if old != primitive.NilObjectID {
+		err := DecrementTestCount(cfg, old)
+		if err != nil {
+			return err
+		}
+	}
+	err := IncrementTestCount(cfg, new)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func DecrementTestCount(cfg config.Config, id primitive.ObjectID) error {
+	coll := cfg.Mc.Database("primary").Collection("business-models")
+	filter := bson.D{{"_id", id}}
+	update := bson.D{{"$inc", bson.D{{"testcount", -1}}}}
+	_, err := coll.UpdateOne(context.Background(), filter, update)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func IncrementTestCount(cfg config.Config, id primitive.ObjectID) error {
+	coll := cfg.Mc.Database("primary").Collection("business-models")
+	filter := bson.D{{"_id", id}}
+	update := bson.D{{"$inc", bson.D{{"testcount", 1}}}}
+	_, err := coll.UpdateOne(context.Background(), filter, update)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func GetAllModels(cfg config.Config) ([]schema.Model, error) {
+	coll := cfg.Mc.Database("primary").Collection("business-models")
+	var models []schema.Model
+	cursor, err := coll.Find(context.Background(), bson.D{})
+	if err != nil {
+		return nil, err
+	}
+	if err = cursor.All(context.Background(), &models); err != nil {
+		return nil, err
+	}
+	return models, nil
+}
+
+func GetAllMethods(cfg config.Config) ([]schema.Method, error) {
+	coll := cfg.Mc.Database("primary").Collection("methods")
+	var methods []schema.Method
+	cursor, err := coll.Find(context.Background(), bson.D{{}})
+	if err != nil {
+		return nil, err
+	}
+	if err = cursor.All(context.Background(), &methods); err != nil {
+		return nil, err
+	}
+	return methods, nil
+}
 
 func GetAuthoredReviews(cfg config.Config, reviews []schema.Review, user schema.User) []schema.AuthoredReview {
 	var wg sync.WaitGroup

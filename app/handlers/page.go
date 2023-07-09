@@ -5,10 +5,47 @@ import (
 
 	"github.com/batudal/hyppo/config"
 	"github.com/batudal/hyppo/schema"
+	"github.com/batudal/hyppo/utils"
 	"github.com/gofiber/fiber/v2"
 	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
+
+func EditTestPage(cfg config.Config) fiber.Handler {
+	return func(c *fiber.Ctx) error {
+		sess, err := cfg.Store.Get(c)
+		if err != nil {
+			return err
+		}
+		user := sess.Get("user").(*schema.User)
+		testid, err := primitive.ObjectIDFromHex(c.Params("test_id"))
+		if err != nil {
+			return err
+		}
+		coll := cfg.Mc.Database("primary").Collection("tests")
+		filter := bson.D{{"userid", user.ObjectId}, {"_id", testid}}
+		var test schema.Test
+		err = coll.FindOne(context.Background(), filter).Decode(&test)
+		if err != nil {
+			return err
+		}
+		models, err := utils.GetAllModels(cfg)
+		if err != nil {
+			return err
+		}
+		methods, err := utils.GetAllMethods(cfg)
+		if err != nil {
+			return err
+		}
+		return c.Render("pages/tests/edit", fiber.Map{
+			"User":    user,
+			"Models":  models,
+			"Methods": methods,
+			"Test":    test,
+		}, "layouts/user")
+	}
+}
 
 func TestsPage(cfg config.Config) fiber.Handler {
 	return func(c *fiber.Ctx) error {
@@ -27,10 +64,10 @@ func TestsPage(cfg config.Config) fiber.Handler {
 		if err = cursor.All(context.Background(), &tests); err != nil {
 			return err
 		}
-		return c.Render("pages/test", fiber.Map{
+		return c.Render("pages/tests", fiber.Map{
 			"User":  user,
 			"Tests": tests,
-		}, "layouts/page")
+		}, "layouts/user")
 	}
 }
 

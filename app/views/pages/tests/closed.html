@@ -1,0 +1,57 @@
+<a class="model raw" href="/tests/{{.ObjectId.Hex}}">
+  <div class="test-bar">
+    <div class="test-title">
+      <h2 class="color-neutral-200">{{.Title}}</h2>
+      <p class="detail color-neutral-300" id="start" class="start">{{.StartDate}}</p>
+      <p>👉</p>
+      <p class="detail color-neutral-300" id="end" class="end">{{.EndDate}}</p>
+    </div>
+    {{if eq .Status "private"}}
+    <label class="test-passive-toggle detail">Private</label>
+    {{else}}
+    <label class="test-passive-toggle detail">Public</label>
+    {{end}}
+  </div>
+</a>
+<script>
+  function parseDate(date) {
+    var date_ = new Date(parseInt(date))
+    start.innerHTML = startdate.toLocaleDateString('en-GB', {
+      day: 'numeric',
+      month: 'short',
+      year: 'numeric'
+    })
+  }
+  // var allstarts = document.getElementsByClassName('start')
+  // var allends = document.getElementsByClassName('end')
+  // console.log(allstarts)
+  // for (var i = 0; i < allstarts.length; i++) {
+  //   console.log(allstarts[i].innerHTML)
+  //   var startdate = new Date(parseInt(allstarts[i].innerHTML))
+  //   var enddate = new Date(parseInt(allends[i].innerHTML))
+  //   allends[i].innerHTML = enddate.toLocaleDateString('en-GB', {
+  //     day: 'numeric',
+  //     month: 'short',
+  //     year: 'numeric'
+  //   })
+  //   allstarts[i].innerHTML = startdate.toLocaleDateString('en-GB', {
+  //     day: 'numeric',
+  //     month: 'short',
+  //     year: 'numeric'
+  //   })
+  // }
+  // var start = document.getElementById('start')
+  // var startdate = new Date(parseInt(start.innerHTML))
+  // var end = document.getElementById('end')
+  // var enddate = new Date(parseInt(end.innerHTML))
+  // end.innerHTML = enddate.toLocaleDateString('en-GB', {
+  //   day: 'numeric',
+  //   month: 'short',
+  //   year: 'numeric'
+  // })
+  // start.innerHTML = startdate.toLocaleDateString('en-GB', {
+  //   day: 'numeric',
+  //   month: 'short',
+  //   year: 'numeric'
+  // })
+</script>
