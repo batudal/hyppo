@@ -13,5 +13,6 @@ build: build_app
 
 build_app:
 	@echo "Building app binary..."
+	cd ./app tailwindcss -i ./assets/app.css -o ./assets/tw.css
 	cd ./app && env GOOS=linux CGO_ENABLED=0 go build -o hyppo .
 	@echo "Done!"

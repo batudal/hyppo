@@ -1,5 +1,5 @@
 {{$human_dates := .HumanDates}}
-<div class="tests-page">
+<div class="container w-[800px] flex flex-col items-start p-4 gap-4">
   <div class="tabs-bar">
     <div class="tab-list-wrapper">
       <div class="tab-list">
@@ -12,21 +12,26 @@
   </div>
   {{if .Tests}}
   {{range $index, $test := .Tests}}
-  <a class="model raw" href="/tests/{{$test.ObjectId.Hex}}">
-    <div class="test-bar">
-      <div class="test-title">
-        <h2 class="color-neutral-200">{{$test.Title}}</h2>
-        <p class="detail color-neutral-300" id="start" class="start">{{(index $human_dates $index).StartDate}}</p>
-        <p>👉</p>
-        <p class="detail color-neutral-300" id="end" class="end">{{(index $human_dates $index).EndDate}}</p>
+  <div class="flex flex-row items-center w-full gap-4">
+    <a href="/tests/{{$test.ObjectId.Hex}}">
+      <div
+        class="flex flex-row justify-between gap-2 w-full bg-hyppo-900 box-border p-3 rounded-md border-hyppo-700 border hover:bg-hyppo-950 hover:border-hyppo-primary">
+        <div class="flex flex-row justify-start between gap-2 w-full box-border items-center flex-wrap">
+          <h2 class="text-hyppo-200">{{$test.Title}}</h2>
+          <p class="text-sm text-hyppo-300">{{(index $human_dates $index).StartDate}}</p>
+          <p>👉</p>
+          <p class="text-sm text-hyppo-300">{{(index $human_dates $index).EndDate}}</p>
+        </div>
+        {{if eq $test.Status "private"}}
+        <label class="bg-hyppo-800 box-border py-1.5 px-3 detail">Private</label>
+        {{else}}
+        <label class="bg-hyppo-800 box-border py-1.5 px-3 detail rounded-md h-full">Public</label>
+        {{end}}
       </div>
-      {{if eq $test.Status "private"}}
-      <label class="test-passive-toggle detail">Private</label>
-      {{else}}
-      <label class="test-passive-toggle detail">Public</label>
-      {{end}}
-    </div>
-  </a>
+    </a>
+    <button class="secondary" hx-target="body" hx-swap="beforeend" hx-get="/modals/submit_result">🫡 Submit
+      results</button>
+  </div>
   {{end}}
   {{end}}
 </div>

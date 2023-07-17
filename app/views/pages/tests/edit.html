@@ -83,11 +83,11 @@
       <input type="number" name="successcriteria" id="successcriteria" placeholder="0" value="{{.SuccessCriteria}}">
     </div>
     <div class="test-buttons">
-      <button class="secondary small" type="button" hx-delete="/test?test_id={{.ObjectId.Hex}}" hx-swap="innerHTML"
+      <button class="secondary " type="button" hx-delete="/test?test_id={{.ObjectId.Hex}}" hx-swap="innerHTML"
         hx-target="body">🥵 Remove test</button>
       <div class="test-buttons-right">
-        <a href="/tests"><button class="secondary small" type="button">🙈 Discard changes</button></a>
-        <button class="primary small" id="submit-button" type="submit">💾 Save</button>
+        <a href="/tests"><button class="secondary " type="button">🙈 Discard changes</button></a>
+        <button class="primary " id="submit-button" type="submit">💾 Save</button>
       </div>
     </div>
   </form>

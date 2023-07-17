@@ -1,6 +1,7 @@
 package main
 
 import (
+	"flag"
 	"os"
 	"time"
 
@@ -22,8 +23,6 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
-const env = "prod"
-
 func main() {
 	cfg, app := setup()
 	app.Use(logger.New())
@@ -35,7 +34,9 @@ func main() {
 }
 
 func setup() (config.Config, *fiber.App) {
-	if env == "dev" {
+	dev := flag.Bool("dev", false, "development mode")
+	flag.Parse()
+	if *dev {
 		err := godotenv.Load("../.env")
 		if err != nil {
 			panic(err)
@@ -68,7 +69,7 @@ func setup() (config.Config, *fiber.App) {
 		panic(err)
 	}
 	engine := html.New("./views", ".html")
-	if os.Getenv("PRODUCTION") == "0" {
+	if *dev {
 		engine.Reload(true)
 	}
 	courier_client := courier.CreateClient(os.Getenv("COURIER_TOKEN"), nil)
