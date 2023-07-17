@@ -1,5 +1,18 @@
 <div class="modal-container" _="on closeModal remove me">
-  <div class="modal-underlay centered" _="on click trigger
-    closeModal">
+  <div class="modal-underlay" _="on click trigger closeModal"></div>
+  <div class="submit-container bg-hyppo-900 rounded-md p-6 max-w-3xl">
+    <h2>👀 How did your test perform?</h2>
+    <p class="text-hyppo-400">Please enter your result below</p>
+    <form class="flex flex-col gap-2 w-full" hx-patch="/test/submit_result?test_id={{.Test.ObjectId.Hex}}">
+      <p class="subheader">Your KPI</p>
+      <textarea disabled>{{.Test.KPI}}</textarea>
+      <p class="subheader">Your success criteria</p>
+      <textarea disabled>{{.Test.SuccessCriteria}}</textarea>
+      <input type="number" name="result" placeholder="Enter your result" />
+      <div class="flex flex-row justify-between">
+        <button type="button" class="secondary" _="on click trigger closeModal">Discard</button>
+        <button type="submit" class="primary">Submit</button>
+      </div>
+    </form>
   </div>
 </div>

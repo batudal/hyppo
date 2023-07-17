@@ -14,6 +14,37 @@ import (
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
+func HandleSubmitResult(cfg config.Config) fiber.Handler {
+	return func(c *fiber.Ctx) error {
+		sess, err := cfg.Store.Get(c)
+		if err != nil {
+			return err
+		}
+		user := sess.Get("user").(*schema.User)
+		testid, err := primitive.ObjectIDFromHex(c.Query("test_id"))
+		if err != nil {
+			return err
+		}
+		result, err := strconv.ParseFloat(c.FormValue("result"), 64)
+		if err != nil {
+			return err
+		}
+		coll := cfg.Mc.Database("primary").Collection("tests")
+		filter := bson.D{{"_id", testid}, {"userid", user.ObjectId}}
+		update := bson.D{{"$set", bson.D{
+			{"result", result},
+			{"state", "completed"},
+			{"updatedat", primitive.NewDateTimeFromTime(time.Now())},
+		}}}
+		_, err = coll.UpdateOne(context.Background(), filter, update)
+		if err != nil {
+			return err
+		}
+		c.Append("HX-Redirect", "/tests")
+		return c.SendStatus(fiber.StatusNoContent)
+	}
+}
+
 func HandleDeleteTest(cfg config.Config) fiber.Handler {
 	return func(c *fiber.Ctx) error {
 		testid, err := primitive.ObjectIDFromHex(c.Query("test_id"))

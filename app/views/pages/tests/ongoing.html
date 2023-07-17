@@ -3,12 +3,12 @@
   <div class="tabs-bar">
     <div class="tab-list-wrapper">
       <div class="tab-list">
-        <div hx-get="/tests_tabs/ongoing" class="tab-item selected">🐛 Ongoing tests</div>
-        <div hx-get="/tests_tabs/completed" class="tab-item">🦋
+        <div hx-get="/test_tabs/ongoing" class="tab-item selected">🐛 Ongoing tests</div>
+        <div hx-get="/test_tabs/completed" hx-target="closest .container" hx-swap="outerHTML" class="tab-item">🦋
           Completed tests</div>
       </div>
     </div>
-    <button class="primary" hx-post="/test" hx-target="closest .tests-page" hx-swap="outerHTML">👩‍🔬 New test</button>
+    <button class="primary" hx-post="/test" hx-target="closest .container" hx-swap="outerHTML">👩‍🔬 New test</button>
   </div>
   {{if .Tests}}
   {{range $index, $test := .Tests}}
@@ -29,7 +29,8 @@
         {{end}}
       </div>
     </a>
-    <button class="secondary" hx-target="body" hx-swap="beforeend" hx-get="/modals/submit_result">🫡 Submit
+    <button class="secondary" hx-target="body" hx-swap="beforeend"
+      hx-get="/modals/submit_result?test_id={{$test.ObjectId.Hex}}">🫡 Submit
       results</button>
   </div>
   {{end}}
