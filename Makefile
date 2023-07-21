@@ -1,4 +1,4 @@
-start: build_app
+start: build
 	docker-compose down
 	@echo "Docker images closed!"
 	docker-compose up --build -d 
@@ -8,11 +8,8 @@ stop:
 	docker-compose down
 	@echo "Docker images closed!"
 
-build: build_app
-	@echo "Docker images built!"
-
-build_app:
+build:
 	@echo "Building app binary..."
-	cd ./app tailwindcss -i ./assets/app.css -o ./assets/tw.css
+	cd ./app tailwindcss -i ./assets/app.css -o ./assets/tw.css --minify
 	cd ./app && env GOOS=linux CGO_ENABLED=0 go build -o hyppo .
 	@echo "Done!"

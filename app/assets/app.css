@@ -2,6 +2,12 @@
 @tailwind components;
 @tailwind utilities;
 
+/* @layer components { */
+/*   .btn-primary { */
+/*     @apply py-2 px-4 bg-blue-500 text-white font-semibold rounded-lg shadow-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-opacity-75; */
+/*   } */
+/* } */
+
 :root{
   --color-primary: #E11D48;
   --color-primary-dark: #BE123C;
@@ -112,7 +118,6 @@ dd {
   margin: 0;
 }
 
-/* Set core body defaults */
 body {
   min-height: 100vh;
   scroll-behavior: smooth;
@@ -124,11 +129,7 @@ body {
   align-items: center;
   color: var(--color-neutral-50);
 }
-body.light-theme {
-  background-color: var(--color-neutral-50);
-}
 
-/* Remove list styles on ul, ol elements with a class attribute */
 ul[class],
 ol[class] {
   list-style: none;
@@ -139,13 +140,11 @@ a,a:visited, a:hover, a:active{
   color: inherit;
 }
 
-/* Make images easier to work with */
 img {
   max-width: 100%;
   display: block;
 }
 
-/* Inherit fonts for inputs and buttons */
 *,
 input,
 button,
@@ -171,7 +170,6 @@ select{
   background-repeat: no-repeat;
 }
 
-/* Remove all animations and transitions for people that prefer not to see them */
 @media (prefers-reduced-motion: reduce) {
   * {
     animation-duration: 0.01ms !important;
@@ -191,10 +189,6 @@ footer{
   background-color: var(--color-neutral-1000);
   border-top: 1px solid var(--color-neutral-800);
   width: 100%;
-}
-.light-theme footer{
-  background-color: var(--color-neutral-50);
-  border-top: 1px solid var(--color-neutral-200);
 }
 .footer{
   display:flex;
@@ -231,9 +225,6 @@ main{
   width:100%;
   max-width:100%;
   z-index:9;
-}
-.light-theme .hero{
-    background-image: url("https://personal-bucket.fra1.cdn.digitaloceanspaces.com/hero_background_light.png")
 }
 @media (max-width: 1000px) {
   .hero{
@@ -668,12 +659,9 @@ small{
   background-color: var(--color-neutral-800);
   cursor: pointer;
 }
-.light-theme .menu-item:hover {
-  background-color: var(--color-neutral-200);
-  cursor: pointer;
-}
 .avatar {
   height: 40px;
+  width: 40px;
   border-radius: 50%;
 }
 .models{
@@ -693,16 +681,16 @@ small{
   flex-direction: column;
   padding: 16px;
   background-color: var(--color-neutral-900);
-  border: 1px solid var(--color-neutral-700);
+  border: 1px solid var(--color-neutral-800);
   border-radius: 6px;
-  gap: 16px;
+  gap: 12px;
   max-width: 100%;
   width: 800px;
   box-sizing: border-box;
 }
 .model-card:hover{
   background-color: var(--color-neutral-1000);
-  border: 1px solid var(--color-primary);
+  border: 1px solid var(--color-neutral-700);
   cursor: pointer;
 }
 .light-theme .model{
