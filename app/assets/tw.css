@@ -2433,6 +2433,27 @@ button.tertiary{
   width: 100%;
 }
 
+.model-description h3 {
+  letter-spacing: 1.2px;
+  text-transform: uppercase;
+  font-weight: 600;
+  font-size: 13px;
+  color: var(--color-neutral-300);
+}
+
+.model-description ol {
+  padding: 8px;
+  color: var(--color-neutral-50);
+}
+
+.model-description li::before{
+  content: "• ";
+}
+
+.model-description p {
+  margin-top: 24px;
+}
+
 .hover\:border-hyppo-primary:hover {
   --tw-border-opacity: 1;
   border-color: rgb(225 29 72 / var(--tw-border-opacity));
@@ -2442,4 +2463,3 @@ button.tertiary{
   --tw-bg-opacity: 1;
   background-color: rgb(0 3 18 / var(--tw-bg-opacity));
 }
-

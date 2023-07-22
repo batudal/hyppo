@@ -1,4 +1,4 @@
-module github.com/batudal/hyppo
+module github.com/batudal/hyppo/app
 
 go 1.20
 

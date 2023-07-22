@@ -1549,3 +1549,23 @@ button.tertiary{
 
 }
 
+.model-description h3 {
+  letter-spacing: 1.2px;
+  text-transform: uppercase;
+  font-weight: 600;
+  font-size: 13px;
+  color: var(--color-neutral-300);
+}
+
+.model-description ol {
+  padding: 8px;
+  color: var(--color-neutral-50);
+}
+
+.model-description li::before{
+  content: "• ";
+}
+
+.model-description p {
+  margin-top: 24px;
+}
